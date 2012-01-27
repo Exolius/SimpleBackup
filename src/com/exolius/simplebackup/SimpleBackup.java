@@ -31,7 +31,7 @@ public class SimpleBackup extends JavaPlugin {
   {
     getServer().getScheduler().cancelTasks(this);
 
-    System.out.println("[SimpleBackup] Disabled");
+    System.out.println("[SimpleBackup] Disabled SimpleBackup");
   }
 
   public void onEnable()
@@ -52,7 +52,7 @@ public class SimpleBackup extends JavaPlugin {
   }
 
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (sender instanceof Player && sender.isOp()) {
+    if (sender instanceof Player) {
         if(command.getName().equalsIgnoreCase("backup")){
             doChecks();
             return true;
@@ -95,7 +95,7 @@ public class SimpleBackup extends JavaPlugin {
       {
         if (SimpleBackup.this.broadcast) {
           SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE +
-            "[SimpleBackup] Backup starting. Expect some lag.");
+            "[SimpleBackup] Backup starting");
         }
         for (World world : SimpleBackup.this.getServer().getWorlds()) {
           try
@@ -123,7 +123,7 @@ public class SimpleBackup extends JavaPlugin {
 
         if (SimpleBackup.this.broadcast)
           SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE +
-            "[SimpleBackup] Backup complete.");
+            "[SimpleBackup] Backup complete");
       }
     };
   }
