@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
@@ -17,20 +16,18 @@ import java.util.List;
 public class SimpleBackup extends JavaPlugin {
 
   double interval;
-  boolean allWorlds;
   boolean broadcast = true;
-  List<String> backupWorlds;
+  boolean plugins = false;
+  public static String message = "[SimpleBackup]";
+  public static String dateFormat = "yyyy-MM-DD-hh-mm-ss" ;
   final double tph = 72000.0D;
-
-  private boolean plugins = true;
-  public static String backupFile = "./backups";
-
+  List<String> backupWorlds;
+  public static String backupFile = "backups/";
   public static int intervalBetween = 100;
 
   public void onDisable()
   {
     getServer().getScheduler().cancelTasks(this);
-
     System.out.println("[SimpleBackup] Disabled SimpleBackup");
   }
 
@@ -40,63 +37,49 @@ public class SimpleBackup extends JavaPlugin {
 
     double ticks = 72000.0D * this.interval;
 
-    this.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+    this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 
     public void run() {
         doChecks();
     }
-}, 60L);
+}, 60L, (long)ticks);
 
-    System.out.println("[SimpleBackup] Enabled. Backup interval " +
-      this.interval + " hours");
+    System.out.println("[SimpleBackup] Enabled. Backup interval " + this.interval + " hours");
   }
 
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (sender instanceof Player) {
-        if(command.getName().equalsIgnoreCase("backup")){
-            doChecks();
-            return true;
-        }
-    } return false;
+    return false;
   }
 
   public void loadConfiguration()
   {
     Configuration c = getConfiguration();
 
-    this.interval = c.getDouble("backup-interval-hours", 12.0D);
-    intervalBetween = c.getInt("interval-between", intervalBetween);
-    this.allWorlds = c.getBoolean("backup-all-worlds", true);
-    this.broadcast = c.getBoolean("broadcast-message", true);
-    this.plugins = c.getBoolean("backup-plugins", true);
-    backupFile = c.getString("backup-file", "backups/");
-    this.backupWorlds = c
-      .getStringList("backup-worlds", new ArrayList());
+    this.interval =     c.getDouble("backup-interval-hours", 1.0D);
+    intervalBetween =   c.getInt("interval-between", intervalBetween);
+    this.broadcast =    c.getBoolean("broadcast-message", true);
+    backupFile =        c.getString("backup-file", "backups/");
+    this.backupWorlds = c.getStringList("backup-worlds", new ArrayList());
+    this.message =      c.getString("backup-message",message);
+    this.dateFormat =   c.getString("backup-date-format",dateFormat);
 
     if (this.backupWorlds.size() == 0) {
       this.backupWorlds.add(((World)getServer().getWorlds().get(0)).getName());
     }
+
     c.setProperty("backup-worlds", this.backupWorlds);
     c.setProperty("interval-between", Integer.valueOf(intervalBetween));
     c.setProperty("backup-interval-hours", Double.valueOf(this.interval));
-    c.setProperty("backup-all-worlds", Boolean.valueOf(this.allWorlds));
     c.setProperty("broadcast-message", Boolean.valueOf(this.broadcast));
-    c.setProperty("backup-plugins", Boolean.valueOf(this.plugins));
     c.setProperty("backup-file", backupFile);
-
+    c.setProperty("backup-message", message);
+    c.setProperty("backup-date-format",dateFormat);
     c.save();
   }
 
-  public Runnable doChecks()
+  public void doChecks()
   {
-    return new Runnable()
-    {
-      public void run()
-      {
-        if (SimpleBackup.this.broadcast) {
-          SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE +
-            "[SimpleBackup] Backup starting");
-        }
+        SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE + "[SimpleBackup] Backup starting");
         for (World world : SimpleBackup.this.getServer().getWorlds()) {
           try
           {
@@ -113,19 +96,9 @@ public class SimpleBackup extends JavaPlugin {
             e.printStackTrace();
           }
         }
-        if (SimpleBackup.this.plugins) try { BackupThread bt = SimpleBackup.this.backupWorld(null, new File("plugins"));
-            if (bt != null);
-            bt.start();
-            while (bt.isAlive());
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
 
         if (SimpleBackup.this.broadcast)
-          SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE +
-            "[SimpleBackup] Backup complete");
-      }
-    };
+          SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE + "[SimpleBackup] Backup complete");
   }
 
   public BackupThread backupWorld(World world, File file)
@@ -133,15 +106,11 @@ public class SimpleBackup extends JavaPlugin {
   {
     if (world != null)
     {
-      if (this.allWorlds) {
-        return new BackupThread(new File(world.getName()));
-      }
-      if ((!this.allWorlds) && (this.backupWorlds.contains(world.getName()))) {
+      if ((this.backupWorlds.contains(world.getName()))) {
         return new BackupThread(new File(world.getName()));
       }
 
-      System.out.println("[SimpleBackup] Skipping backup for " +
-        world.getName());
+      //System.out.println("[SimpleBackup] Skipping backup for " + world.getName());
       return null;
     }if ((world == null) && (file != null)) {
       return new BackupThread(file);
@@ -152,7 +121,7 @@ public class SimpleBackup extends JavaPlugin {
   public static String format()
   {
     Date date = new Date();
-    SimpleDateFormat formatter = new SimpleDateFormat("HH.mm@dd.MM.yyyy");
+    SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
     return formatter.format(date);
   }
 }

@@ -7,23 +7,25 @@ import java.util.zip.ZipOutputStream;
 public class BackupThread extends Thread
 {
   private final File world;
-  private final File file;
+  public File file;
   private ZipOutputStream os;
+    private String FullPath;
+    private char pathSeparator,
+                 extensionSeparator;
 
   public BackupThread(File world)
     throws Exception
   {
-    System.out.println("Backing up " + world.getCanonicalPath());
+    System.out.println("[SimpleBackup] Backing up " + world.getCanonicalPath());
     this.world = world;
     this.file = 
-      new File(SimpleBackup.backupFile + world.getName() + "/" + 
+      new File(SimpleBackup.backupFile + "/" + world.getName() + "/" +
       SimpleBackup.format() + ".zip");
     if (!this.file.exists()) {
       this.file.getParentFile().mkdirs();
       this.file.createNewFile();
     }
-    this.os = 
-      new ZipOutputStream(new DataOutputStream(new FileOutputStream(this.file)));
+    this.os = new ZipOutputStream(new DataOutputStream(new FileOutputStream(this.file)));
   }
 
   public void run()
@@ -41,7 +43,7 @@ public class BackupThread extends Thread
 
   public void loop(File[] subfiles) {
     for (File file : subfiles)
-      if ((file.isDirectory()) || (file.getName().endsWith("/")) || (file.getName().endsWith("\\")))
+      if (((file.isDirectory()) || file.getName().endsWith("/")) || (file.getName().endsWith("\\")))
         loop(file.listFiles());
       else
         try {
@@ -51,12 +53,18 @@ public class BackupThread extends Thread
         }
   }
 
+  public String path() {
+        int sep = FullPath.lastIndexOf(pathSeparator);
+        return FullPath.substring(0, sep);
+    }
+
   public void write(File input)
     throws Exception
   {
     String name = input.getPath();
-
-    ZipEntry e = new ZipEntry(name);
+    //System.out.println(name);
+    //System.out.println("Split: " + name.substring(name.indexOf('\\')));
+    ZipEntry e = new ZipEntry(name.substring(name.indexOf('\\') + 1));
     this.os.putNextEntry(e);
 
     BufferedInputStream is = new BufferedInputStream(
