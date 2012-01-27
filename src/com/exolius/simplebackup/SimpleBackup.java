@@ -48,7 +48,7 @@ public class SimpleBackup extends JavaPlugin {
 }, 60L);
 
     System.out.println("[SimpleBackup] Enabled. Backup interval " +
-      this.interval + " hours");
+      this.interval + " hours.");
   }
 
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
