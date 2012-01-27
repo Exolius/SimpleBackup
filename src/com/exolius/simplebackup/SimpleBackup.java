@@ -109,8 +109,6 @@ public class SimpleBackup extends JavaPlugin {
       if ((this.backupWorlds.contains(world.getName()))) {
         return new BackupThread(new File(world.getName()));
       }
-
-      //System.out.println("[SimpleBackup] Skipping backup for " + world.getName());
       return null;
     }if ((world == null) && (file != null)) {
       return new BackupThread(file);
