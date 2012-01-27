@@ -1,0 +1,8 @@
+name: SimpleBackup
+main: com.exolius.simplebackup.SimpleBackup
+version: 1.0
+
+commands:
+   backup:
+      description: Backup the map.
+      usage: /backup [ ]
