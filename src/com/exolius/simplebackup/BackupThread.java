@@ -62,8 +62,6 @@ public class BackupThread extends Thread
     throws Exception
   {
     String name = input.getPath();
-    //System.out.println(name);
-    //System.out.println("Split: " + name.substring(name.indexOf('\\')));
     ZipEntry e = new ZipEntry(name.substring(name.indexOf('\\') + 1));
     this.os.putNextEntry(e);
 
