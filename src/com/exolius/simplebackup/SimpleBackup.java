@@ -25,6 +25,8 @@ public class SimpleBackup extends JavaPlugin {
     public static int intervalBetween = 100;
     List<String> backupWorlds;
     protected FileConfiguration config;
+    public static String pluginLocation;
+    public boolean firstRunDelay = true;
 
 
     public void onDisable() {
@@ -35,7 +37,8 @@ public class SimpleBackup extends JavaPlugin {
     public void onEnable() {
         // When plugin is enabled, load the "config.yml"
         loadConfiguration();
-
+        pluginLocation = "" + this.getDataFolder();
+        message = PluginUtils.loadMessage();
         // Set the backup interval, 72000.0D is 1 hour, multiplying it by the value interval will change the backup cycle time
         double ticks = 72000.0D * this.interval;
 
@@ -72,6 +75,7 @@ public class SimpleBackup extends JavaPlugin {
         backupWorlds =      config.getStringList("backup-worlds");
         message =           config.getString("backup-message", message);
         dateFormat =        config.getString("backup-date-format", dateFormat);
+        firstRunDelay =     config.getBoolean("delay-first-backup", firstRunDelay);
 
         if (backupWorlds.size() == 0) {
             // If "backupWorlds" is empty then fill it with the worlds
@@ -86,33 +90,40 @@ public class SimpleBackup extends JavaPlugin {
         config.set("backup-file", backupFile);
         config.set("backup-message", message);
         config.set("backup-date-format", dateFormat);
+        config.set("delay-first-backup", firstRunDelay);
         saveConfig();
     }
 
     public void doBackup() {
-        // Begin backup of worlds
-        // Broadcast the backup initialization if enabled
-        SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE + "[SimpleBackup] Backup starting");
-        // Loop through all the specified worlds and save then to a .zip
-        for (World world : SimpleBackup.this.getServer().getWorlds()) {
-            try {
-                world.save();
-                world.setAutoSave(false);
+        if(firstRunDelay)
+        {
+            firstRunDelay = false;
+        } else
+        {
+            // Begin backup of worlds
+            // Broadcast the backup initialization if enabled
+            SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE + "Backup Starting.");
+            // Loop through all the specified worlds and save then to a .zip
+            for (World world : SimpleBackup.this.getServer().getWorlds()) {
+                try {
+                    world.save();
+                    world.setAutoSave(false);
 
-                BackupThread bt = SimpleBackup.this.backupWorld(world, null);
-                if (bt != null) {
-                    bt.start();
-                    while (bt.isAlive()) ;
-                    world.setAutoSave(true);
+                    BackupThread bt = SimpleBackup.this.backupWorld(world, null);
+                    if (bt != null) {
+                        bt.start();
+                        while (bt.isAlive()) ;
+                        world.setAutoSave(true);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        }
 
-        // Broadcast the backup completion if enabled
-        if (SimpleBackup.this.broadcast)
-            SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE + "[SimpleBackup] Backup complete");
+            // Broadcast the backup completion if enabled
+            if (SimpleBackup.this.broadcast)
+                SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE + "Backup Completed.");
+        }
     }
 
     public BackupThread backupWorld(World world, File file)
