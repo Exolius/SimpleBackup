@@ -1,31 +1,29 @@
 package com.exolius.simplebackup;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+
+import static java.lang.System.currentTimeMillis;
+import static java.lang.System.out;
 
 public class PluginUtils {
 
-    public static String loadMessage() {
-        File ms = new File(SimpleBackup.pluginLocation + "custommessage.txt");
-        if(!ms.exists()) {
-
-        }
-
-        try {
-                FileInputStream in = new FileInputStream(SimpleBackup.pluginLocation + "custommessage.txt");
-                BufferedReader br = new BufferedReader(new InputStreamReader(in));
-                String strLine;
-                for (int j = 0; j < 5; j++) {
-                	SimpleBackup.message = SimpleBackup.message + br.readLine();
+    //not implemented yet.
+    public static void deleteOldBackups(int daysBack, String dirWay) {
+        File directory = new File(dirWay);
+        if (directory.exists()) {
+            File[] listFiles = directory.listFiles();
+            long purgeTime = currentTimeMillis() - (daysBack * 24L * 60L * 60L * 1000L);
+            for (File listFile : listFiles) {
+                if (listFile.lastModified() > purgeTime) {
+                    out.println("[Simple Backup] Deleting oldest file:" + listFile);
+                    if (listFile.isFile()) {
+                        listFile.delete();
+                    } else {
+                        deleteOldBackups(daysBack, listFile.getAbsolutePath());
+                    }
                 }
-                in.close();
-
-            } catch (Exception exception) {
             }
-        System.out.println(SimpleBackup.message);
-        return SimpleBackup.message;
+        }
     }
 
 }
