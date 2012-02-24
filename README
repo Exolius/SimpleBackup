@@ -1,6 +1,7 @@
-Since simple save is no longer available, I was looking for a nice simple way to back up my server maps with minimal configuration. Just set the folder and the interval, and your away. Most of the plugins I found had too many features for such a simple task (in my own opinion) so I decided to create this little plugin. Basing my code of Banana Backup I began coding and threw this together.
+CURRENT BUILD: Bukkit-1.1-R4 #1938
+Since simple save is no longer available, I was looking for a nice simple way to back up my server maps with minimal configuration. Just set the folder and the interval, and your away. Most of the plugins I found had too many features for such a simple task (in my own opinion) so I decided to create this little plugin.
 
-I am planning to change the way the plugin works to make it different in features form bananabackup. for the moment all that's different is the structure of the code and the way it saves the zip files, I also added in some more configuration options (and removed some as well)
+Basing my code of Banana Backup I began coding and threw this together.I am planning to change the way the plugin works to make it different in features from bananabackup. For the moment all that's different is the structure of the code and the way it saves the zip files, I also added in some more configuration options (and removed some as well)
 
 What can I use this for?
 
@@ -10,30 +11,19 @@ Let your users download them
 Roll back your map
 Plus more features as development goes on, but not too many because this is a simple plugin remember.
 
-Configuring:
+Providing error reports:
 
-Configuring SimpleBackup is easy, just open the "config.yml" file and modify the settings in there, here's an example with some comments:
+When pasting large ammounts of text please use http:pastebin.com. Its completely free and makes it easier for me to read any error messages you provide.
 
-#Interval between map saves in hours, 0.25 is 15 minutes, 1.0 is 1 hour and so on. (1 hour is default).
-backup-interval-hours: 1.0
+Also provide your SimpleBackup config file when stating you have a problem, so I can see if that's the problem instead.
 
-#Message tag shown in the chat when the server is backing up.
-backup-message: '[SimpleBackup]'
+Upcoming Features
 
-#Worlds to back up, add more on a new line like so: - WORLD_NAME_HERE
-backup-worlds:
-- world
-- world_nether
-- world_the_end
+Custom backup messages, you can set the whole message completely. e.g "Exolius might break the map (again), so I should really back it up"
+Give me some suggestions in the comments below.
 
-#Date format of the filename, it is set for "YEAR-MONTH-DAY-HOUR-MINUTE-SECOND".
-backup-date-format: yyyy-MM-DD-hh-mm-ss
+Want to help me out?
 
-#Interval between different world saves, It will wait X milliseconds before zipping the next world (If more than one world is specified).
-interval-between: 100
+You can donate to simplebackup if you love the plugin to bits and want to show me some support by clicking the donate button in the top right! Don't want to or cant donate, then just leave a comment showing me support instead, or even better, click this adfly link: http:adf.ly/395231/simplebackup It goes back to this page.
 
-#The backup folder used by the plugin, defaults to the server.jar location.
-backup-file: backups/
-
-#Choose to broadcast the backup message in the chat.
-broadcast-message: true
+Thanks for any support you give me, and enjoy simple backup!
