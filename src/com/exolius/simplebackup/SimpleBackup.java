@@ -20,7 +20,7 @@ public class SimpleBackup extends JavaPlugin {
     double interval;
     boolean broadcast = true;
     public static String message = "[SimpleBackup]";
-    public static String dateFormat = "yyyy-MM-DD-hh-mm-ss";
+    public static String dateFormat = "yyyy-MM-dd-HH-mm-ss";
     public static String backupFile = "backups/";
     public static int intervalBetween = 100;
     List<String> backupWorlds;
