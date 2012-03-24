@@ -5,7 +5,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class BackupThread extends Thread {
-    private final File world;
+    public final File world;
     public File file;
     private ZipOutputStream os;
     private String FullPath;
