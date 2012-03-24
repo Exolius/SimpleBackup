@@ -159,6 +159,7 @@ public class SimpleBackup extends JavaPlugin {
                         if ((this.backupWorlds.contains(world.getName()))) {
                             world.save();
                             world.setAutoSave(false);
+                            System.out.println("[SimpleBackup] Backing up " + world.getWorldFolder());
                             FileUtils.copyFiles(world.getWorldFolder(), new File(SimpleBackup.backupFile + "/" + world.getName() + "/" + SimpleBackup.format()));
                             world.setAutoSave(true);
                         }
