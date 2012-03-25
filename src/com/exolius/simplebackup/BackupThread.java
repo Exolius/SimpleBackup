@@ -72,3 +72,5 @@ public class BackupThread extends Thread {
         this.os.closeEntry();
     }
 }
+
+//This code came from BannanaBackup and has been modified by Exolius
