@@ -164,12 +164,11 @@ public class SimpleBackup extends JavaPlugin {
                             world.setAutoSave(true);
                         }
                     } else {
-                         //If zipping isnt disabled proceed to zip up the world folders then copy them
-                        world.save();
-                        world.setAutoSave(false);
-
+                        //If zipping isnt disabled proceed to zip up the world folders then copy them
                         BackupThread bt = SimpleBackup.this.backupWorld(world, null);
                         if (bt != null) {
+                            world.save();
+                            world.setAutoSave(false);
                             bt.start();
                             while (bt.isAlive()) ;
                             world.setAutoSave(true);
