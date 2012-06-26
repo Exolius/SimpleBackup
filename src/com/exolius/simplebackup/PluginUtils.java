@@ -66,7 +66,7 @@ public class PluginUtils {
         }
     }
     
-    public static void deleteOldBackups(String backupFile, String dateFormat, List<DateModification> intervals, List<DateModification> frequencies) {
+    public static void deleteOldBackups(File backupFile, String dateFormat, List<DateModification> intervals, List<DateModification> frequencies) {
         if (intervals.isEmpty() || frequencies.isEmpty()) {
             return;
         }
@@ -94,8 +94,8 @@ public class PluginUtils {
 
     }
 
-    private static SortedMap<Date, File> collectFiles(String backupFile, String dateFormat) {
-        File[] files = new File(backupFile).listFiles();
+    private static SortedMap<Date, File> collectFiles(File backupFile, String dateFormat) {
+        File[] files = backupFile.listFiles();
         if (files == null) {
             return null;
         }

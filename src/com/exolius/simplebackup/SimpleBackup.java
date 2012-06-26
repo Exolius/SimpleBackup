@@ -162,6 +162,7 @@ public class SimpleBackup extends JavaPlugin {
                 } finally {
                     world.setAutoSave(true);
                 }
+                PluginUtils.deleteOldBackups(targetFolder, dateFormat, deleteScheduleIntervals, deleteScheduleFrequencies);
             }
         }
 
@@ -169,9 +170,6 @@ public class SimpleBackup extends JavaPlugin {
         if (broadcast) {
             getServer().broadcastMessage(ChatColor.BLUE + message + " Backup completed.");
         }
-
-        // Old map file deletion goes here
-        PluginUtils.deleteOldBackups(backupFile, dateFormat, deleteScheduleIntervals, deleteScheduleFrequencies);
     }
 
     private void zipFiles(File sourceFolder, File destinationFile) throws IOException {
