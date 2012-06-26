@@ -1,18 +1,17 @@
 package com.exolius.simplebackup;
 
+import com.exolius.simplebackup.PluginUtils.DateModification;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -21,7 +20,6 @@ public class SimpleBackup extends JavaPlugin {
 
     public boolean broadcast = true;
     public boolean disableZipping = false;
-    public boolean deleteOldMaps = false;
 
     public String message = "[SimpleBackup]";
     public String dateFormat = "yyyy-MM-dd-HH-mm-ss";
@@ -29,10 +27,11 @@ public class SimpleBackup extends JavaPlugin {
     public String customMessage = "Backup starting";
 
     List<String> backupWorlds;
+    List<DateModification> deleteScheduleIntervals;
+    List<DateModification> deleteScheduleFrequencies;
 
     protected FileConfiguration config;
 
-    public int daysToDelete = 2;
 
     /*----------------------------------------
      This is ran when the plugin is disabled
@@ -90,34 +89,42 @@ public class SimpleBackup extends JavaPlugin {
         config = getConfig();
 
         // Set default values for variables
-        interval = config.getDouble("backup-interval-hours", 1.0D);
-        broadcast = config.getBoolean("broadcast-message", true);
-        backupFile = config.getString("backup-file", backupFile);
+        interval = config.getDouble("backup-interval-hours");
+        broadcast = config.getBoolean("broadcast-message");
+        backupFile = config.getString("backup-file");
         backupWorlds = config.getStringList("backup-worlds");
-        message = config.getString("backup-message", message);
-        dateFormat = config.getString("backup-date-format", dateFormat);
-        customMessage = config.getString("custom-backup-message", customMessage);
-        disableZipping = config.getBoolean("disable-zipping", disableZipping);
-
-        //These haven't been implemented yet
-        //deleteOldMaps = config.getBoolean("delete-old-maps", deleteOldMaps);
-        //daysToDelete = config.getInt("days-to-delete", daysToDelete);
-
-        // Generate the default config.yml
-        config.set("backup-worlds", backupWorlds);
-        config.set("backup-interval-hours", Double.valueOf(interval));
-        config.set("broadcast-message", Boolean.valueOf(broadcast));
-        config.set("backup-file", backupFile);
-        config.set("backup-message", message);
-        config.set("backup-date-format", dateFormat);
-        config.set("custom-backup-message", customMessage);
-        config.set("disable-zipping", disableZipping);
-
-        //These haven't been implemented yet
-        //config.set("delete-old-maps", deleteOldMaps);
-        //config.set("days-to-delete", daysToDelete);
+        message = config.getString("backup-message");
+        dateFormat = config.getString("backup-date-format");
+        customMessage = config.getString("custom-backup-message");
+        disableZipping = config.getBoolean("disable-zipping");
+        List<String> intervalsStr = config.getStringList("delete-schedule.intervals");
+        List<String> frequenciesStr = config.getStringList("delete-schedule.interval-frequencies");
+        List<DateModification> intervals = new ArrayList<DateModification>();
+        List<DateModification> frequencies = new ArrayList<DateModification>();
+        for (int i = 0; i < intervalsStr.size(); i++) {
+            String is = intervalsStr.get(i);
+            DateModification interval = DateModification.fromString(is);
+            if (interval == null) {
+                System.out.println("[SimpleBackup] Can't parse interval " + is);
+                if (i < frequenciesStr.size()) {
+                    frequenciesStr.remove(i);
+                }
+            } else {
+                intervals.add(interval);
+            }
+        }
+        for (String fs : frequenciesStr) {
+            DateModification f = DateModification.fromString(fs);
+            if (f == null) {
+                System.out.println("[SimpleBackup] Can't parse frequency " + fs);
+            }
+            frequencies.add(f);
+        }
+        deleteScheduleIntervals = intervals;
+        deleteScheduleFrequencies = frequencies;
 
         //Save the configuration file
+        config.options().copyDefaults(true);
         saveConfig();
 
         if (backupWorlds.isEmpty()) {
@@ -164,6 +171,7 @@ public class SimpleBackup extends JavaPlugin {
         }
 
         // Old map file deletion goes here
+        PluginUtils.deleteOldBackups(backupFile, dateFormat, deleteScheduleIntervals, deleteScheduleFrequencies);
     }
 
     private void zipFiles(File sourceFolder, File destinationFile) throws IOException {
@@ -208,19 +216,6 @@ public class SimpleBackup extends JavaPlugin {
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
         return formatter.format(date);
-    }
-
-    //Prints debugging information, only used for development and is never ran
-    //with a plugin release.
-    public void printDebug() {
-        // Debugging code, prints loaded variables to console
-        // To see if the loading works after modification
-        System.out.println(backupWorlds);
-        System.out.println(interval);
-        System.out.println(broadcast);
-        System.out.println(backupFile);
-        System.out.println(message);
-        System.out.println(dateFormat);
     }
 
 }
