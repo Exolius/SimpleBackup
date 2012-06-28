@@ -74,7 +74,12 @@ public class SimpleBackup extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("sbackup")) {
             if (sender.isOp()) {
-                doBackup();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        doBackup();
+                    }
+                }).start();
             }
             return true;
         }
@@ -138,7 +143,7 @@ public class SimpleBackup extends JavaPlugin {
     /*------------------------
      This runs the map backup
      -------------------------*/
-    public void doBackup() {
+    public synchronized void doBackup() {
         // Begin backup of worlds
         // Broadcast the backup initialization if enabled
         if (broadcast) {
