@@ -173,7 +173,7 @@ public class SimpleBackup extends JavaPlugin {
     }
 
     private void zipFiles(File sourceFolder, File destinationFile) throws IOException {
-        if (destinationFile.getParentFile().exists()) {
+        if (!destinationFile.getParentFile().exists()) {
             destinationFile.getParentFile().mkdirs();
         }
         ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(destinationFile));
