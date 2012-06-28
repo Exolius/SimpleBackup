@@ -10,7 +10,7 @@ public class PluginUtils {
 
     public static class DateModification {
         private int field;
-        private int amount;
+        int amount;
 
         public DateModification(int field, int amount) {
             this.field = field;
