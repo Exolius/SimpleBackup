@@ -3,15 +3,15 @@ package com.exolius.simplebackup;
 import com.exolius.simplebackup.PluginUtils.DateModification;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -33,6 +33,7 @@ public class SimpleBackup extends JavaPlugin {
 
     protected FileConfiguration config;
 
+    private Commands sbCommandExecutor;
 
     /*----------------------------------------
      This is ran when the plugin is disabled
@@ -53,38 +54,23 @@ public class SimpleBackup extends JavaPlugin {
         // Set the backup interval, 72000.0D is 1 hour, multiplying it by the value interval will change the backup cycle time
         long ticks = (long) (72000 * this.interval);
 
+        // After enabling, print to console to say if it was successful
+        System.out.println("[SimpleBackup] Enabled. Backup interval: " + this.interval + " hours");
+
         // Add the repeating task, set it to repeat the specified time
         this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 
             public void run() {
-                // When the task is run, start the map backup
-                doBackup();
+            // When the task is run, start the map backup
+            doBackup();
             }
         }, ticks, ticks);
 
-        // After enabling, print to console to say if it was successful
-        System.out.println("[SimpleBackup] Enabled. Backup interval " + this.interval + " hours");
+        //Plugin commands
+        getCommand("sbackup").setExecutor(new Commands(this));
+
         // Shameless self promotion in the source code :D
         if(selfPromotion){System.out.println("[SimpleBackup] Developed by Exolius");}
-    }
-
-    /*-------------------------------------------------------
-     This is ran when the plugin command is sent by a player
-     --------------------------------------------------------*/
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("sbackup")) {
-            if (sender.isOp()) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        doBackup();
-                    }
-                }).start();
-            }
-            return true;
-        }
-        return false;
     }
 
     /*---------------------------------------------------------
@@ -129,8 +115,6 @@ public class SimpleBackup extends JavaPlugin {
         }
         deleteScheduleIntervals = intervals;
         deleteScheduleFrequencies = frequencies;
-        
-
 
         //Save the configuration file
         config.options().copyDefaults(true);
