@@ -4,6 +4,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+/**
+ * Commands file
+ * @author gravypod
+ *
+ */
 public class Commands implements CommandExecutor {
 	SimpleBackup plugin;
 

@@ -25,16 +25,14 @@ public class FileUtils {
 			throws IOException {
 		// Check to ensure that the source is valid
 		if (!originalFile.exists()) {
-			throw new IOException("copyFiles: Can not find source: "
-					+ originalFile.getAbsolutePath() + ".");
+			throw new IOException("copyFiles: Can not find source: " + originalFile.getAbsolutePath() + ".");
 		} else if (!originalFile.canRead()) {
 			/* 
 			 * check to ensure we have rights
 			 * to the source...
 			 */
-			throw new IOException("copyFiles: No right to source: "
-					+ originalFile.getAbsolutePath() + ".");
-		}
+			throw new IOException("copyFiles: No right to source: " + originalFile.getAbsolutePath() + ".");
+		} 
 		// is this a directory copy?
 		if (originalFile.isDirectory()) {
 			if (!newFile.exists()) { 
@@ -73,10 +71,10 @@ public class FileUtils {
 				}
 			} catch (IOException e) { 
 				// Error copying file...
-				IOException wrapper = new IOException("copyFiles: Unable to copy file: " + originalFile.getAbsolutePath() + "to" + newFile.getAbsolutePath() + ".");
-				wrapper.initCause(e);
-				wrapper.setStackTrace(e.getStackTrace());
-				throw wrapper;
+				IOException wrapperException = new IOException("copyFiles: Unable to copy file: " + originalFile.getAbsolutePath() + "to" + newFile.getAbsolutePath() + ".");
+				wrapperException.initCause(e);
+				wrapperException.setStackTrace(e.getStackTrace());
+				throw wrapperException;
 			} finally { 
 				// Ensure that the files are closed (if they were open).
 				if (fin != null) {

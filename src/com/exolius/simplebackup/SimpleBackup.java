@@ -6,6 +6,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -43,6 +44,8 @@ public class SimpleBackup extends JavaPlugin {
 	 -----------------------------------------*/
 	@Override
 	public void onEnable() {
+		//Time a startup
+		long start = System.currentTimeMillis();
 		// When plugin is enabled, load the "config.yml"
 		loadConfiguration();
 		// Set the backup interval, 72000.0D is 1 hour, multiplying it by the
@@ -54,6 +57,12 @@ public class SimpleBackup extends JavaPlugin {
 		getCommand("sbackup").setExecutor(new Commands(this));
 		/** Starts a thread pool so we can add tasks to run! */
 		new ThreadPool();
+		try {
+			MetricsLite metrics = new MetricsLite(this);
+		    metrics.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		// Add the repeating task, set it to repeat the specified time
 		this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
 			public void run() {
@@ -61,6 +70,7 @@ public class SimpleBackup extends JavaPlugin {
 				addNewBackup();
 			}
 		}, ticks, ticks);
+		log.info("[SimpleBackup] By Exolius started in " + (System.currentTimeMillis() - start) / 1000.0D + " seconds.");
 	}
 
 	/*---------------------------------------------------------

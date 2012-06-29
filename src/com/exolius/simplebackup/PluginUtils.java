@@ -31,30 +31,30 @@ public class PluginUtils {
             cal.add(field, -amount);
         }
 
-        public static DateModification fromString(String s) {
-            if ("0".equals(s)) {
+        public static DateModification fromString(String firstDate) {
+            if ("0".equals(firstDate)) {
                 return new DateModification(Calendar.DATE, 0);
             }
-            Matcher matcher = Pattern.compile("(\\d+)([hdwmyHDWMY])").matcher(s);
+            Matcher matcher = Pattern.compile("(\\d+)([hdwmyHDWMY])").matcher(firstDate);
             if (matcher.matches()) {
-                String countStr = matcher.group(1);
-                String unitStr = matcher.group(2);
+                String timesCount = matcher.group(1);
+                String dateString = matcher.group(2);
                 int count;
                 try {
-                    count = Integer.parseInt(countStr);
+                    count = Integer.parseInt(timesCount);
                 } catch (NumberFormatException e) {
                     return null;
                 }
                 int unit;
-                if ("h".equalsIgnoreCase(unitStr)) {
+                if ("h".equalsIgnoreCase(dateString)) {
                     unit = Calendar.HOUR;
-                } else if ("d".equalsIgnoreCase(unitStr)) {
+                } else if ("d".equalsIgnoreCase(dateString)) {
                     unit = Calendar.DATE;
-                } else if ("w".equalsIgnoreCase(unitStr)) {
+                } else if ("w".equalsIgnoreCase(dateString)) {
                     unit = Calendar.WEEK_OF_YEAR;
-                } else if ("m".equalsIgnoreCase(unitStr)) {
+                } else if ("m".equalsIgnoreCase(dateString)) {
                     unit = Calendar.MONTH;
-                } else if ("y".equalsIgnoreCase(unitStr)) {
+                } else if ("y".equalsIgnoreCase(dateString)) {
                     unit = Calendar.YEAR;
                 } else {
                     return null;
