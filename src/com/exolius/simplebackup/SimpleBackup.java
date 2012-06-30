@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -139,25 +138,19 @@ public class SimpleBackup extends JavaPlugin {
             getServer().broadcastMessage(ChatColor.BLUE + message + " " + customMessage);
         }
         // Loop through all the specified worlds and save them
-        for (final World world : getServer().getWorlds()) {
+        for (World world : getServer().getWorlds()) {
             if (backupWorlds.contains(world.getName())) {
                 File targetFolder = new File(backupFile, world.getName());
                 world.setAutoSave(false);
                 try {
-                    getServer().getScheduler().callSyncMethod(this, new Callable<Object>() {
-                        @Override
-                        public Object call() throws Exception {
-                            world.save();
-                            return null;
-                        }
-                    }).get();
+                    world.save();
                     System.out.println("[SimpleBackup] Backing up " + world.getWorldFolder());
                     if (disableZipping) {
                         FileUtils.copyFiles(world.getWorldFolder(), new File(targetFolder, formatFileName()));
                     } else {
                         zipFiles(world.getWorldFolder(), new File(targetFolder, formatFileName() + ".zip"));
                     }
-                } catch (Exception e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
                     world.setAutoSave(true);
