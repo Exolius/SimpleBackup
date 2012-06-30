@@ -30,6 +30,8 @@ public class SimpleBackup extends JavaPlugin {
 
 	protected FileConfiguration config;
 
+	private boolean isBackingUp = false;
+
 	/*----------------------------------------
 	 This is ran when the plugin is disabled
 	 -----------------------------------------*/
@@ -44,7 +46,7 @@ public class SimpleBackup extends JavaPlugin {
 	 -----------------------------------------*/
 	@Override
 	public void onEnable() {
-		//Time a startup
+		// Time a startup
 		long start = System.currentTimeMillis();
 		// When plugin is enabled, load the "config.yml"
 		loadConfiguration();
@@ -52,25 +54,27 @@ public class SimpleBackup extends JavaPlugin {
 		// value interval will change the backup cycle time
 		long ticks = (long) (72000 * this.interval);
 		// After enabling, print to console to say if it was successful
-		log.info("[SimpleBackup] Enabled, developed by Exolius. Backup interval " + this.interval + " hours");
+		log.info("[SimpleBackup] Enabled, developed by Exolius. Backup interval "
+				+ this.interval + " hours");
 		// Set executor
 		getCommand("sbackup").setExecutor(new Commands(this));
 		/** Starts a thread pool so we can add tasks to run! */
-		new ThreadPool();
 		try {
 			MetricsLite metrics = new MetricsLite(this);
-		    metrics.start();
+			metrics.start();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		// Add the repeating task, set it to repeat the specified time
-		this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
-			public void run() {
-				// When the task is run, start the map backup
-				addNewBackup();
-			}
-		}, ticks, ticks);
-		log.info("[SimpleBackup] By Exolius started in " + (System.currentTimeMillis() - start) / 1000.0D + " seconds.");
+		this.getServer().getScheduler()
+				.scheduleAsyncRepeatingTask(this, new Runnable() {
+					public void run() {
+						// When the task is run, start the map backup
+						addNewBackup();
+					}
+				}, ticks, ticks);
+		log.info("[SimpleBackup] By Exolius started in "
+				+ (System.currentTimeMillis() - start) / 1000.0D + " seconds.");
 	}
 
 	/*---------------------------------------------------------
@@ -89,8 +93,10 @@ public class SimpleBackup extends JavaPlugin {
 		dateFormat = config.getString("backup-date-format");
 		customMessage = config.getString("custom-backup-message");
 		disableZipping = config.getBoolean("disable-zipping");
-		List<String> intervalsStr = config.getStringList("delete-schedule.intervals");
-		List<String> frequenciesStr = config.getStringList("delete-schedule.interval-frequencies");
+		List<String> intervalsStr = config
+				.getStringList("delete-schedule.intervals");
+		List<String> frequenciesStr = config
+				.getStringList("delete-schedule.interval-frequencies");
 		List<DateModification> intervals = new ArrayList<DateModification>();
 		List<DateModification> frequencies = new ArrayList<DateModification>();
 		for (int i = 0; i < intervalsStr.size(); i++) {
@@ -127,6 +133,16 @@ public class SimpleBackup extends JavaPlugin {
 	}
 
 	public synchronized void addNewBackup() {
-		ThreadPool.addTask(new Backup(this));
+		if (!isBackingUp())
+			new Backup(this).start();
 	}
+
+	public boolean isBackingUp() {
+		return isBackingUp;
+	}
+
+	public void setBackingUp(boolean isBackingUp) {
+		this.isBackingUp = isBackingUp;
+	}
+
 }

@@ -25,7 +25,7 @@ public class Commands implements CommandExecutor {
 			String[] args) {
 		if (cmd.getName().equalsIgnoreCase("sbackup")) {
 			if (sender.isOp()) {
-				ThreadPool.addTask(new Backup(plugin));
+				plugin.addNewBackup();
 			}
 			return true;
 		}

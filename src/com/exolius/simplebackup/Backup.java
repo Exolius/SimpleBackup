@@ -8,7 +8,12 @@ import java.util.Date;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 
-public class Backup implements Runnable {
+/**
+ * 
+ * @author <a href='www.github.com/ElgarL'>ElgarL</a> and <a href='www.github.com/gravypod'>gravypod</a>
+ * 
+ */
+public class Backup extends Thread {
 
 	SimpleBackup plugin;
 
@@ -24,31 +29,36 @@ public class Backup implements Runnable {
 			plugin.getServer().broadcastMessage(ChatColor.BLUE + plugin.message + " " + plugin.customMessage);
 		}
 		// Loop through all the specified worlds and save them
+
 		for (World world : plugin.getServer().getWorlds()) {
-			if (plugin.backupWorlds.contains(world.getName())) {
-				File targetFolder = new File(plugin.backupFile, world.getName());
-				world.setAutoSave(false);
-				try {
-					world.save();
-					SimpleBackup.log.info("[SimpleBackup] Backing up " + world.getWorldFolder());
-					if (plugin.disableZipping) {
-						FileUtils.copyFiles(world.getWorldFolder(), new File(targetFolder, this.formatFileName()));
-					} else {
-						ZipFile.zipFiles(world.getWorldFolder(), new File(targetFolder, this.formatFileName() + ".zip"));
+			synchronized (world) {
+				if (plugin.backupWorlds.contains(world.getName())) {
+					File targetFolder = new File(plugin.backupFile,
+							world.getName());
+					world.setAutoSave(false);
+					try {
+						world.save();
+						SimpleBackup.log.info("[SimpleBackup] Backing up " + world.getWorldFolder());
+						if (plugin.disableZipping) {
+							FileUtils.copyFiles(world.getWorldFolder(), new File(targetFolder, this.formatFileName()));
+						} else {
+							ZipFile.zipFiles(world.getWorldFolder(), new File(targetFolder, this.formatFileName() + ".zip"));
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					} finally {
+						world.setAutoSave(true);
 					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-					world.setAutoSave(true);
+					PluginUtils.deleteOldBackups(targetFolder, plugin.dateFormat, plugin.deleteScheduleIntervals, plugin.deleteScheduleFrequencies);
 				}
-				PluginUtils.deleteOldBackups(targetFolder, plugin.dateFormat, plugin.deleteScheduleIntervals, plugin.deleteScheduleFrequencies);
 			}
 		}
+		plugin.setBackingUp(false);
 		// Broadcast the backup completion if enabled
 		if (plugin.broadcast) {
-			plugin.getServer().broadcastMessage(
-					ChatColor.BLUE + plugin.message + " Backup completed.");
+			plugin.getServer().broadcastMessage(ChatColor.BLUE + plugin.message + " Backup completed.");
 		}
+
 	}
 
 	public synchronized String formatFileName() {
