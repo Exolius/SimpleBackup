@@ -23,8 +23,7 @@ public class FileUtils {
 	 */
 	public synchronized static void copyFiles(File originalFile, File newFile)
 			throws IOException {
-		// Check to ensure that the source is valid
-		if (!originalFile.exists()) {
+		if (!originalFile.exists()) { // Check to ensure that the source is valid
 			throw new IOException("copyFiles: Can not find source: " + originalFile.getAbsolutePath() + ".");
 		} else if (!originalFile.canRead()) {
 			/* 
@@ -33,51 +32,40 @@ public class FileUtils {
 			 */
 			throw new IOException("copyFiles: No right to source: " + originalFile.getAbsolutePath() + ".");
 		} 
-		// is this a directory copy?
-		if (originalFile.isDirectory()) {
+		if (originalFile.isDirectory()) { // is this a directory copy?
 			if (!newFile.exists()) { 
 				/*
-				 *  does the destination already exist?
-				 *	if not we need to make it exist if possible (note this is mkdirs not mkdir)
+				 *  Does the destination already exist?
+				 *	If not we need to make it exist if possible (note this is mkdirs not mkdir)
 				 */
 				if (!newFile.mkdirs()) {
-					throw new IOException(
-							"copyFiles: Could not create direcotry: "
-									+ newFile.getAbsolutePath() + ".");
+					throw new IOException("copyFiles: Could not create direcotry: " + newFile.getAbsolutePath() + ".");
 				}
 			}
-			// get a listing of files...
-			String list[] = originalFile.list();
-			// copy all the files in the list.
-			for (int i = 0; i < list.length; i++) {
+			String list[] = originalFile.list(); // get a listing of files...
+			for (int i = 0; i < list.length; i++) { // copy all the files in the list.
 				File dest1 = new File(newFile, list[i]);
 				File src1 = new File(originalFile, list[i]);
 				copyFiles(src1, dest1);
 			}
 		} else {
-			// This was not a directory, so lets just copy the file
-			FileInputStream fin = null;
+			FileInputStream fin = null; // This was not a directory, so lets just copy the file
 			FileOutputStream fout = null;
-			// Buffer 4K at a time (you can change this).
-			byte[] buffer = new byte[4096]; 
+			byte[] buffer = new byte[4096]; // Buffer 4K at a time (you can change this).
 			int bytesRead;
 			try {
-				// open the files for input and output
-				fin = new FileInputStream(originalFile);
+				fin = new FileInputStream(originalFile); // open the files for input and output
 				fout = new FileOutputStream(newFile);
-				// while bytesRead indicates a successful read, lets write...
-				while ((bytesRead = fin.read(buffer)) >= 0) {
+				while ((bytesRead = fin.read(buffer)) >= 0) { // while bytesRead indicates a successful read, lets write...
 					fout.write(buffer, 0, bytesRead);
 				}
 			} catch (IOException e) { 
-				// Error copying file...
-				IOException wrapperException = new IOException("copyFiles: Unable to copy file: " + originalFile.getAbsolutePath() + "to" + newFile.getAbsolutePath() + ".");
+				IOException wrapperException = new IOException("copyFiles: Unable to copy file: " + originalFile.getAbsolutePath() + "to" + newFile.getAbsolutePath() + "."); // Error copying file...
 				wrapperException.initCause(e);
 				wrapperException.setStackTrace(e.getStackTrace());
 				throw wrapperException;
 			} finally { 
-				// Ensure that the files are closed (if they were open).
-				if (fin != null) {
+				if (fin != null) { // Ensure that the files are closed (if they were open).
 					fin.close();
 				}
 				if (fout != null) {

@@ -10,6 +10,9 @@ import org.bukkit.World;
 
 /**
  * 
+ * Backup thread that doesn't clog up the main thread.
+ * This is used to make sure you aren't clogging up the main thread.
+ * You must leave this header on here!
  * @author <a href='www.github.com/ElgarL'>ElgarL</a> and <a href='www.github.com/gravypod'>gravypod</a>
  * 
  */
@@ -23,18 +26,16 @@ public class Backup extends Thread {
 
 	@Override
 	public void run() {
-		// Begin backup of worlds
-		// Broadcast the backup initialization if enabled
+		// Begin backup of worlds. 
 		if (plugin.broadcast) {
-			plugin.getServer().broadcastMessage(ChatColor.BLUE + plugin.message + " " + plugin.customMessage);
+			plugin.getServer().broadcastMessage(ChatColor.BLUE + plugin.message + " " + plugin.customMessage); // Broadcast the backup initialization if enabled
 		}
-		// Loop through all the specified worlds and save them
+		
 
-		for (World world : plugin.getServer().getWorlds()) {
+		for (World world : plugin.getServer().getWorlds()) { // Loop through all the specified worlds and save them
 			synchronized (world) {
 				if (plugin.backupWorlds.contains(world.getName())) {
-					File targetFolder = new File(plugin.backupFile,
-							world.getName());
+					File targetFolder = new File(plugin.backupFile, world.getName());
 					world.setAutoSave(false);
 					try {
 						world.save();
@@ -54,16 +55,13 @@ public class Backup extends Thread {
 			}
 		}
 		plugin.setBackingUp(false);
-		// Broadcast the backup completion if enabled
-		if (plugin.broadcast) {
+		if (plugin.broadcast) { // Broadcast the backup completion if enabled
 			plugin.getServer().broadcastMessage(ChatColor.BLUE + plugin.message + " Backup completed.");
 		}
 
 	}
 
-	public synchronized String formatFileName() {
-		// Set the naming format of the backed up file, based on the config
-		// values
+	public synchronized String formatFileName() { // Set the naming format of the backed up file, based on the config values
 		Date date = new Date();
 		SimpleDateFormat formatter = new SimpleDateFormat(plugin.dateFormat);
 		return formatter.format(date);

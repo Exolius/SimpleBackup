@@ -5,7 +5,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 /**
- * Commands file
+ * CommandsExecutor file.
+ * You must not remove this header!
  * @author gravypod
  *
  */

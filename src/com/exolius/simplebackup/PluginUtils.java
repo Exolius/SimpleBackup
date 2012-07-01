@@ -1,82 +1,17 @@
 package com.exolius.simplebackup;
 
 import java.io.File;
-import java.text.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class PluginUtils {
-
-	private enum dates {
-			h, d, w, m, y;
-	}
 	
-	
-    public static class DateModification {
-        private int field;
-        int amount;
-
-        public DateModification(int field, int amount) {
-            this.field = field;
-            this.amount = amount;
-        }
-
-        public void moveForward(Calendar cal) {
-            if (amount == 0) {
-                throw new UnsupportedOperationException();
-            }
-            cal.add(field, amount);
-        }
-
-        public void moveBack(Calendar cal) {
-            if (amount == 0) {
-                throw new UnsupportedOperationException();
-            }
-            cal.add(field, -amount);
-        }
-
-        public static DateModification fromString(String firstDate) {
-            if ("0".equals(firstDate)) {
-                return new DateModification(Calendar.DATE, 0);
-            }
-            Matcher matcher = Pattern.compile("(\\d+)([hdwmyHDWMY])").matcher(firstDate);
-            if (matcher.matches()) {
-                String timesCount = matcher.group(1);
-                String dateString = matcher.group(2);
-                int count;
-                try {
-                    count = Integer.parseInt(timesCount);
-                } catch (NumberFormatException e) {
-                    return null;
-                }
-                int unit;
-                switch (dates.valueOf(dateString)) {
-                case h:
-                	unit = Calendar.HOUR;
-                	break;
-                case d:
-                	unit = Calendar.DATE;
-                	break;
-                case w:
-                	unit = Calendar.WEEK_OF_YEAR;
-                	break;
-                case m:
-                	unit = Calendar.MONTH;
-                	break;
-                case y:
-                	unit = Calendar.YEAR;
-                	break;
-                default:
-                	return null;
-                }
-                return new DateModification(unit, count);
-                
-            }
-            return null;
-        }
-    }
-    
     public static void deleteOldBackups(File backupFile, String dateFormat, List<DateModification> intervals, List<DateModification> frequencies) {
         if (intervals.isEmpty() || frequencies.isEmpty()) {
             return;

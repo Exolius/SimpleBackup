@@ -19,6 +19,11 @@ import java.net.URLEncoder;
 import java.util.UUID;
 import java.util.logging.Level;
 
+/**
+ * Do not remove this header!
+ * @author <a href='https://github.com/Hidendra'>Hidendra</a>
+ *
+ */
 public class MetricsLite {
 
     /**
