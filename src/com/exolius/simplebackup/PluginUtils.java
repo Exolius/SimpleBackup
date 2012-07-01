@@ -1,71 +1,17 @@
 package com.exolius.simplebackup;
 
 import java.io.File;
-import java.text.*;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class PluginUtils {
-
-    public static class DateModification {
-        private int field;
-        private int amount;
-
-        public DateModification(int field, int amount) {
-            this.field = field;
-            this.amount = amount;
-        }
-
-        public void moveForward(Calendar cal) {
-            if (amount == 0) {
-                throw new UnsupportedOperationException();
-            }
-            cal.add(field, amount);
-        }
-
-        public void moveBack(Calendar cal) {
-            if (amount == 0) {
-                throw new UnsupportedOperationException();
-            }
-            cal.add(field, -amount);
-        }
-
-        public static DateModification fromString(String s) {
-            if ("0".equals(s)) {
-                return new DateModification(Calendar.DATE, 0);
-            }
-            Matcher matcher = Pattern.compile("(\\d+)([hdwmyHDWMY])").matcher(s);
-            if (matcher.matches()) {
-                String countStr = matcher.group(1);
-                String unitStr = matcher.group(2);
-                int count;
-                try {
-                    count = Integer.parseInt(countStr);
-                } catch (NumberFormatException e) {
-                    return null;
-                }
-                int unit;
-                if ("h".equalsIgnoreCase(unitStr)) {
-                    unit = Calendar.HOUR;
-                } else if ("d".equalsIgnoreCase(unitStr)) {
-                    unit = Calendar.DATE;
-                } else if ("w".equalsIgnoreCase(unitStr)) {
-                    unit = Calendar.WEEK_OF_YEAR;
-                } else if ("m".equalsIgnoreCase(unitStr)) {
-                    unit = Calendar.MONTH;
-                } else if ("y".equalsIgnoreCase(unitStr)) {
-                    unit = Calendar.YEAR;
-                } else {
-                    return null;
-                }
-                return new DateModification(unit, count);
-                
-            }
-            return null;
-        }
-    }
-    
+	
     public static void deleteOldBackups(File backupFile, String dateFormat, List<DateModification> intervals, List<DateModification> frequencies) {
         if (intervals.isEmpty() || frequencies.isEmpty()) {
             return;

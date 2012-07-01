@@ -4,29 +4,32 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+/**
+ * CommandsExecutor file.
+ * You must not remove this header!
+ * @author gravypod
+ *
+ */
 public class Commands implements CommandExecutor {
-    private SimpleBackup plugin;
+	SimpleBackup plugin;
 
-    public Commands(SimpleBackup plugin) {
-        this.plugin = plugin;
-    }
+	/**
+	 * Start up the CommandExecutor for SimpleBackup!
+	 * 
+	 * @param plugin
+	 */
+	Commands(SimpleBackup plugin) {
+		this.plugin = plugin;
+	}
 
-    /*-------------------------------------------------------
-    This is ran when the plugin command is sent by a player
-    --------------------------------------------------------*/
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("sbackup")) {
-            if (sender.isOp()) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        plugin.doBackup();
-                    }
-                }).start();
-            }
-            return true;
-        }
-        return false;
-    }
+	public boolean onCommand(CommandSender sender, Command cmd, String label,
+			String[] args) {
+		if (cmd.getName().equalsIgnoreCase("sbackup")) {
+			if (sender.isOp()) {
+				plugin.addNewBackup();
+			}
+			return true;
+		}
+		return false;
+	}
 }
