@@ -6,15 +6,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FileUtils {
-    /**
-     * This function will copy files or directories from one location to another.
-     * note that the source and the destination must be mutually exclusive. This
-     * function can not be used to copy a directory to a sub directory of itself.
-     * The function will also have problems if the destination files already exist.
-     * @param src -- A File object that represents the source for the copy
-     * @param dest -- A File object that represnts the destination for the copy.
-     * @throws IOException if unable to copy.
-     */
+	/**
+	 * This function will copy files or directories from one location to
+	 * another. note that the source and the destination must be mutually
+	 * exclusive. This function can not be used to copy a directory to a sub
+	 * directory of itself. The function will also have problems if the
+	 * destination files already exist.
+	 * 
+	 * @param originalFile
+	 *            -- A File object that represents the source for the copy
+	 * @param newFile
+	 *            -- A File object that represnts the destination for the copy.
+	 * @throws IOException
+	 *             if unable to copy.
+	 * @author <a href='http://www.dreamincode.net/code/snippet1443.htm'>NickDMax</a>
+	 */
     public static void copyFiles(File src, File dest) throws IOException {
         //Check to ensure that the source is valid
         if (!src.exists()) {
@@ -67,6 +73,3 @@ public class FileUtils {
     }
 
 }
-
-//The code in this file has come from the following URL: (Credit where credit is due)
-// http://www.dreamincode.net/code/snippet1443.htm
