@@ -18,12 +18,13 @@ public class Commands implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("sbackup")) {
             if (sender.isOp()) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        plugin.doBackup();
-                    }
-                }).start();
+            	
+            	if (plugin.isBackingUp()) {
+            		sender.sendMessage("Backup is currently running!");
+            	} else {
+            		sender.sendMessage("Starting backup!");
+            		plugin.addNewBackup();
+            	}
             }
             return true;
         }
