@@ -58,7 +58,6 @@ public class SimpleBackup extends JavaPlugin {
 				+ this.interval + " hours");
 		// Set executor
 		getCommand("sbackup").setExecutor(new Commands(this));
-		/** Starts a thread pool so we can add tasks to run! */
 		try {
 			MetricsLite metrics = new MetricsLite(this);
 			metrics.start();
