@@ -1,7 +1,5 @@
-CURRENT BUILD: Bukkit #2117
+CURRENT BUILD: Bukkit #02222
 Since simple save is no longer available, I was looking for a nice simple way to back up my server maps with minimal configuration. Just set the folder and the interval, and your away. Most of the plugins I found had too many features for such a simple task (in my own opinion) so I decided to create this little plugin.
-
-Basing my code of Banana Backup I began coding and threw this together.I am planning to change the way the plugin works to make it different in features from bananabackup. For the moment all that's different is the structure of the code and the way it saves the zip files, I also added in some more configuration options (and removed some as well)
 
 What can I use this for?
 
@@ -13,12 +11,15 @@ Plus more features as development goes on, but not too many because this is a si
 
 Providing error reports:
 
-When pasting large ammounts of text please use http:pastebin.com. Its completely free and makes it easier for me to read any error messages you provide.
+When pasting large ammounts of text please use http:pastebin.com. Its completely free and makes it easier for me to read any error messages you provide. You can even set it as a private paste so only people with the link can view it.
 
 Also provide your SimpleBackup config file when stating you have a problem, so I can see if that's the problem instead.
 
 Want to help me out?
 
-You can donate to simplebackup if you love the plugin to bits and want to show me some support by clicking the donate button in the top right! Don't want to or cant donate, then just leave a comment showing me support instead, or even better, click this adfly link: http:adf.ly/395231/simplebackup.
+You can donate to Simplebackup if you love the plugin to bits and want to show me some support by clicking the donate button in the top right! Don't want to or can't donate, then just leave a comment showing me support instead, or even better, click this adfly link: http:adf.ly/395231/simplebackup.
 
 Thanks for any support you give me, and enjoy simple backup!
+
+
+Thanks to Mantun for improving the source code and adding more features, thanks bro!
