@@ -24,7 +24,7 @@ public class ZipBackup extends BackupFileManager {
         ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(backupFile));
         try {
             for (File worldFolder : worldFolders) {
-                logger.info("[SimpleBackup] Backing up " + worldFolder);
+                logger.info("Backing up " + worldFolder);
                 zipFiles(worldFolder.getParentFile().toURI(), worldFolder, zip);
             }
         } finally {
@@ -40,7 +40,7 @@ public class ZipBackup extends BackupFileManager {
     @Override
     public void deleteBackup(Date date) {
         File backupFile = new File(backupFolder, getFileName(date));
-        logger.info("[SimpleBackup] Deleting backup " + backupFile.getPath());
+        logger.info("Deleting backup " + backupFile.getPath());
         backupFile.delete();
     }
 

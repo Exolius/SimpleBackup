@@ -16,7 +16,7 @@ public class CopyBackup extends BackupFileManager {
         Date date = new Date();
         File destination = new File(backupFolder, getFileName(date));
         for (File worldFolder : worldFolders) {
-            logger.info("[SimpleBackup] Backing up " + worldFolder);
+            logger.info("Backing up " + worldFolder);
             FileUtils.copyFiles(worldFolder, new File(destination, worldFolder.getName()));
         }
         return date;
@@ -25,7 +25,7 @@ public class CopyBackup extends BackupFileManager {
     @Override
     public void deleteBackup(Date date) throws IOException {
         File backupFile = new File(backupFolder, getFileName(date));
-        logger.info("[SimpleBackup] Deleting backup " + backupFile.getPath());
+        logger.info("Deleting backup " + backupFile.getPath());
         deleteFile(backupFile);
     }
 

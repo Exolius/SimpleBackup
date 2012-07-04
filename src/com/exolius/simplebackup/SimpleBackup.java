@@ -36,7 +36,7 @@ public class SimpleBackup extends JavaPlugin {
     @Override
     public void onDisable() {
         getServer().getScheduler().cancelTasks(this);
-        getServer().getLogger().info("[SimpleBackup] Disabled SimpleBackup");
+        getLogger().info("Disabled SimpleBackup");
     }
 
     /*----------------------------------------
@@ -49,7 +49,7 @@ public class SimpleBackup extends JavaPlugin {
         // Set the backup interval, 72000.0D is 1 hour, multiplying it by the value interval will change the backup cycle time
         long ticks = (long) (72000 * this.interval);
         // After enabling, print to console to say if it was successful
-        getServer().getLogger().info("[SimpleBackup] Enabled. Backup interval: " + this.interval + " hours");
+        getLogger().info("Enabled. Backup interval: " + this.interval + " hours");
 
         // Add the repeating task, set it to repeat the specified time
         this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
@@ -65,7 +65,7 @@ public class SimpleBackup extends JavaPlugin {
 
         // Shameless self promotion in the source code :D
         if (selfPromotion) {
-            getServer().getLogger().info("[SimpleBackup] Developed by Exolius");
+            getLogger().info("Developed by Exolius");
         }
     }
 

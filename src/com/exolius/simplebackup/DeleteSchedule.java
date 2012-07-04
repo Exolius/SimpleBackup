@@ -21,7 +21,7 @@ public class DeleteSchedule {
             String is = intervalsStr.get(i);
             DateModification interval = DateModification.fromString(is);
             if (interval == null) {
-                logger.warning("[SimpleBackup] Can't parse interval " + is);
+                logger.warning("Can't parse interval " + is);
                 if (i < frequenciesStr.size()) {
                     frequenciesStr.remove(i);
                 }
@@ -32,7 +32,7 @@ public class DeleteSchedule {
         for (String fs : frequenciesStr) {
             DateModification f = DateModification.fromString(fs);
             if (f == null) {
-                logger.warning("[SimpleBackup] Can't parse frequency " + fs);
+                logger.warning("Can't parse frequency " + fs);
             }
             frequencies.add(f);
         }
