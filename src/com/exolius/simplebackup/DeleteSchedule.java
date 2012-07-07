@@ -1,12 +1,45 @@
 package com.exolius.simplebackup;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.*;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PluginUtils {
+public class DeleteSchedule {
+
+    private List<DateModification> intervals;
+    private List<DateModification> frequencies;
+    private IBackupFileManager backupFileManager;
+
+    public DeleteSchedule(List<String> intervalsStr, List<String> frequenciesStr, IBackupFileManager backupFileManager, Logger logger) {
+        List<DateModification> intervals = new ArrayList<DateModification>();
+        List<DateModification> frequencies = new ArrayList<DateModification>();
+        for (int i = 0; i < intervalsStr.size(); i++) {
+            String is = intervalsStr.get(i);
+            DateModification interval = DateModification.fromString(is);
+            if (interval == null) {
+                logger.warning("Can't parse interval " + is);
+                if (i < frequenciesStr.size()) {
+                    frequenciesStr.remove(i);
+                }
+            } else {
+                intervals.add(interval);
+            }
+        }
+        for (String fs : frequenciesStr) {
+            DateModification f = DateModification.fromString(fs);
+            if (f == null) {
+                logger.warning("Can't parse frequency " + fs);
+            }
+            frequencies.add(f);
+        }
+        this.intervals = intervals;
+        this.frequencies = frequencies;
+        this.backupFileManager = backupFileManager;
+    }
 
     public static class DateModification {
         private int field;
@@ -42,7 +75,7 @@ public class PluginUtils {
                 int count;
                 try {
                     count = Integer.parseInt(countStr);
-                } catch (NumberFormatException e) {
+                } catch (NumberFormatException ignored) {
                     return null;
                 }
                 int unit;
@@ -66,19 +99,19 @@ public class PluginUtils {
         }
     }
     
-    public static void deleteOldBackups(File backupFile, String dateFormat, List<DateModification> intervals, List<DateModification> frequencies) {
+    public void deleteOldBackups() throws IOException {
         if (intervals.isEmpty() || frequencies.isEmpty()) {
             return;
         }
         // collect files
-        SortedMap<Date, File> oldFiles = collectFiles(backupFile, dateFormat);
+        SortedSet<Date> oldFiles = backupFileManager.backupList();
         if (oldFiles.isEmpty()) {
             return;
         }
 
         // delete unwanted files in each interval
         Calendar intervalEnd = Calendar.getInstance();
-        intervalEnd.setTime(oldFiles.lastKey());
+        intervalEnd.setTime(oldFiles.last());
         intervals.get(0).moveBack(intervalEnd);
         for (int i = 1; i <= intervals.size(); i++) {
             Calendar intervalStart = null;
@@ -94,25 +127,9 @@ public class PluginUtils {
 
     }
 
-    private static SortedMap<Date, File> collectFiles(File backupFile, String dateFormat) {
-        File[] files = backupFile.listFiles();
-        if (files == null) {
-            return null;
-        }
-        SortedMap<Date, File> oldFiles = new TreeMap<Date, File>();
-        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
-        for (File file : files) {
-            Date date = formatter.parse(file.getName(), new ParsePosition(0));
-            if (date != null) {
-                oldFiles.put(date, file);
-            }
-        }
-        return oldFiles;
-    }
-
-    private static SortedMap<Date, File> filter(SortedMap<Date, File> oldFiles, Calendar from, Calendar to) {
-        SortedMap<Date, File> result = new TreeMap<Date, File>(oldFiles);
-        Iterator<Date> it = result.keySet().iterator();
+    private SortedSet<Date> filter(SortedSet<Date> oldFiles, Calendar from, Calendar to) {
+        SortedSet<Date> result = new TreeSet<Date>(oldFiles);
+        Iterator<Date> it = result.iterator();
         while (it.hasNext()) {
             Date date = it.next();
             if (from != null && date.before(from.getTime()) || !date.before(to.getTime())) {
@@ -122,14 +139,14 @@ public class PluginUtils {
         return result;
     }
 
-    private static void deleteExtraBackups(SortedMap<Date, File> files, DateModification desiredFrequency) {
+    private void deleteExtraBackups(SortedSet<Date> files, DateModification desiredFrequency) throws IOException {
         if (files.isEmpty()) {
             return;
         }
         Calendar nextDate = null;
-        for (Date date : files.keySet()) {
+        for (Date date : files) {
             if (desiredFrequency.amount == 0) {
-                deleteBackup(files.get(date));
+                backupFileManager.deleteBackup(date);
             } else if (nextDate == null) {
                 nextDate = Calendar.getInstance();
                 nextDate.setTime(date);
@@ -139,14 +156,9 @@ public class PluginUtils {
                     desiredFrequency.moveForward(nextDate);
                 } while (!date.before(nextDate.getTime()));
             } else {
-                deleteBackup(files.get(date));
+                backupFileManager.deleteBackup(date);
             }
         }
-    }
-
-    private static void deleteBackup(File file) {
-        System.out.println("[SimpleBackup] Deleting backup " + file.getPath());
-        file.delete();
     }
 
 }
