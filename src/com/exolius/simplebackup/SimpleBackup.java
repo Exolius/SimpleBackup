@@ -23,6 +23,7 @@ public class SimpleBackup extends JavaPlugin {
     private String dateFormat = "yyyy-MM-dd-HH-mm-ss";
     private String backupFile = "backups/";
     private String customMessage = "Backup starting";
+    private String customMessageEnd = "Backup completed";
 
     private List<String> backupWorlds;
     private IBackupFileManager backupFileManager;
@@ -84,6 +85,7 @@ public class SimpleBackup extends JavaPlugin {
         message = config.getString("backup-message");
         dateFormat = config.getString("backup-date-format");
         customMessage = config.getString("custom-backup-message");
+        customMessageEnd = config.getString("custom-backup-message-end");
         disableZipping = config.getBoolean("disable-zipping");
         selfPromotion = config.getBoolean("self-promotion");
         List<String> intervalsStr = config.getStringList("delete-schedule.intervals");
@@ -155,7 +157,7 @@ public class SimpleBackup extends JavaPlugin {
 
         // Broadcast the backup completion if enabled
         if (broadcast) {
-            getServer().broadcastMessage(ChatColor.BLUE + message + " Backup completed.");
+            getServer().broadcastMessage(ChatColor.BLUE + message + " " + customMessageEnd);
         }
     }
 

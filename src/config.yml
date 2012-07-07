@@ -64,3 +64,4 @@ delete-schedule:
 broadcast-message: true
 backup-message: '[SimpleBackup]'
 custom-backup-message: Backup starting
+custom-backup-message-end: Backup completed
