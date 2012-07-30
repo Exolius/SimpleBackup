@@ -43,6 +43,10 @@
 #
 # The 'backup starting' message that is broadcast when backup starts
 # custom-backup-message: Backup starting
+#
+# The 'backup completed' message that is broadcast when backup ends
+# custom-backup-message-end: Backup completed
+#
 
 backup-interval-hours: 1.0
 backup-worlds:

@@ -56,5 +56,8 @@ backup-message: '[SimpleBackup]'
 # The 'backup starting' message that is broadcast when backup starts
 custom-backup-message: Backup starting
 
+# The 'backup complete' message that is broadcast when backup ends
+custom-backup-message-end: Backup completed
+
 #Disable self promotion, disables the "[SimpleBackup] Developed by Exolius" when the plugin loads
 self-promotion: true
