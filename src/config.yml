@@ -4,7 +4,9 @@
 # List of worlds to backup, leave it empty to backup all worlds
 # backup-worlds:
 # #
-# List of additional folders to backup (relative paths only)
+# List of additional folders to backup (relative paths only). The 'plugins' folder can contain open or locked files!
+# Depending on what plugins you have installed, it may not be a good idea to try to backup that folder.
+# Usually plugins that write a large amounts of data frequently (like some loggers) are risky.
 # backup-folders:
 #        - plugins
 # #
