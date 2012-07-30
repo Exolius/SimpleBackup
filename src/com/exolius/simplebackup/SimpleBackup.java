@@ -51,7 +51,7 @@ public class SimpleBackup extends JavaPlugin {
         // When plugin is enabled, load the "config.yml"
         loadConfiguration();
 
-        if (backupEmpty) {
+        if (!backupEmpty) {
             getServer().getPluginManager().registerEvents(loginListener, this);
         }
 
