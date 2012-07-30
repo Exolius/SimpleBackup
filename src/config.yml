@@ -55,7 +55,6 @@
 backup-interval-hours: 1.0
 backup-worlds:
 backup-folders:
-        - plugins
 backup-file: backups/
 backup-date-format: yyyy-MM-dd-HH-mm-ss
 disable-zipping: false
