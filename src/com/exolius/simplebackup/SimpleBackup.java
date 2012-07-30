@@ -26,6 +26,7 @@ public class SimpleBackup extends JavaPlugin {
     private String customMessageEnd = "Backup completed";
 
     private List<String> backupWorlds;
+    private List<String> additionalFolders;
     private IBackupFileManager backupFileManager;
     private DeleteSchedule deleteSchedule;
 
@@ -82,6 +83,7 @@ public class SimpleBackup extends JavaPlugin {
         broadcast = config.getBoolean("broadcast-message");
         backupFile = config.getString("backup-file");
         backupWorlds = config.getStringList("backup-worlds");
+        additionalFolders = config.getStringList("backup-folders");
         message = config.getString("backup-message");
         dateFormat = config.getString("backup-date-format");
         customMessage = config.getString("custom-backup-message");
@@ -119,7 +121,7 @@ public class SimpleBackup extends JavaPlugin {
             getServer().broadcastMessage(ChatColor.BLUE + message + " " + customMessage);
         }
         // Loop through all the specified worlds and save them
-        List<File> worldFolders = new ArrayList<File>();
+        List<File> foldersToBackup = new ArrayList<File>();
         for (final World world : worldsForBackup()) {
             world.setAutoSave(false);
             try {
@@ -130,15 +132,22 @@ public class SimpleBackup extends JavaPlugin {
                         return null;
                     }
                 }).get();
-                worldFolders.add(world.getWorldFolder());
+                foldersToBackup.add(world.getWorldFolder());
             } catch (Exception e) {
                 getLogger().log(Level.WARNING, e.getMessage(), e);
+            }
+        }
+        // additional folders, e.g. "plugins/"
+        for (String additionalFolder : additionalFolders) {
+            File f = new File(".", additionalFolder);
+            if (f.exists()) {
+                foldersToBackup.add(f);
             }
         }
 
         // zip/copy world folders
         try {
-            backupFileManager.createBackup(worldFolders);
+            backupFileManager.createBackup(foldersToBackup);
         } catch (IOException e) {
             getLogger().log(Level.WARNING, e.getMessage(), e);
         }

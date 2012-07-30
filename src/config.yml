@@ -1,19 +1,23 @@
 # Interval between map saves in hours, 0.25 is 15 minutes, 1.0 is 1 hour and so on. (1 hour is default).
 # backup-interval-hours: 1.0
-#
+# #
 # List of worlds to backup, leave it empty to backup all worlds
 # backup-worlds:
-#
+# #
+# List of additional folders to backup (relative paths only)
+# backup-folders:
+#        - plugins
+# #
 # The folder where backups are stored. Can be absolute path or relative to the working directory.
 # backup-file: backups/
-#
+# #
 # The backup file name. See Java's SimpleDateFormat for formatting help.
 # backup-date-format: yyyy-MM-dd-HH-mm-ss
-#
+# #
 # If zipping is disabled, the world files will be copied to a folder.
 # If zipping is enabled, the world files will be compressed in a zip file.
 # disable-zipping: false
-#
+# #
 # Backup delete schedule
 # For each interval a desired backup frequency is specified, for example:
 # delete-schedule:
@@ -31,25 +35,27 @@
 # for backups older than 6 months + 4 weeks + 3 days, do not keep any;
 # Supported symbols are ('h' = hour, 'd' = day, 'w' = week, 'm' = month, 'y' = year).
 # Fractional numbers are not supported.
-#
+# #
 # true if a message should be broadcast when backup starts or ends
 # broadcast-message: true
-#
+# #
 # Message tag shown in the chat when the server is backing up.
 # Example: if the message was set to '[Bukkit is awesome]' you
 # would see "[Bukkit is awesome] Starting Backup" when the
 # plugin backs up
 # backup-message: '[SimpleBackup]'
-#
+# #
 # The 'backup starting' message that is broadcast when backup starts
 # custom-backup-message: Backup starting
-#
+# #
 # The 'backup completed' message that is broadcast when backup ends
 # custom-backup-message-end: Backup completed
-#
+# #
 
 backup-interval-hours: 1.0
 backup-worlds:
+backup-folders:
+        - plugins
 backup-file: backups/
 backup-date-format: yyyy-MM-dd-HH-mm-ss
 disable-zipping: false
