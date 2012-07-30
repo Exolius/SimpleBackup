@@ -17,6 +17,7 @@ public class SimpleBackup extends JavaPlugin {
 
     private boolean broadcast = true;
     private boolean disableZipping = false;
+    private boolean backupEmpty = false;
     private boolean selfPromotion = false;
 
     private String message = "[SimpleBackup]";
@@ -31,6 +32,7 @@ public class SimpleBackup extends JavaPlugin {
     private DeleteSchedule deleteSchedule;
 
     protected FileConfiguration config;
+    private final LoginListener loginListener = new LoginListener();
 
     /*----------------------------------------
      This is ran when the plugin is disabled
@@ -48,17 +50,24 @@ public class SimpleBackup extends JavaPlugin {
     public void onEnable() {
         // When plugin is enabled, load the "config.yml"
         loadConfiguration();
+
+        if (backupEmpty) {
+            getServer().getPluginManager().registerEvents(loginListener, this);
+        }
+
         // Set the backup interval, 72000.0D is 1 hour, multiplying it by the value interval will change the backup cycle time
         long ticks = (long) (72000 * this.interval);
-        // After enabling, print to console to say if it was successful
-        getLogger().info("Enabled. Backup interval: " + this.interval + " hours");
 
         // Add the repeating task, set it to repeat the specified time
         this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
             @Override
             public void run() {
                 // When the task is run, start the map backup
-                doBackup();
+                if (backupEmpty || getServer().getOnlinePlayers().length > 0 || loginListener.someoneWasOnline()) {
+                    doBackup();
+                } else {
+                    getLogger().info("Skipping backup (no one was online)");
+                }
             }
         }, ticks, ticks);
 
@@ -69,6 +78,9 @@ public class SimpleBackup extends JavaPlugin {
         if (selfPromotion) {
             getLogger().info("Developed by Exolius");
         }
+
+        // After enabling, print to console to say if it was successful
+        getLogger().info("Enabled. Backup interval: " + this.interval + " hours");
     }
 
     /*---------------------------------------------------------
@@ -84,8 +96,9 @@ public class SimpleBackup extends JavaPlugin {
         backupFile = config.getString("backup-file");
         backupWorlds = config.getStringList("backup-worlds");
         additionalFolders = config.getStringList("backup-folders");
-        message = config.getString("backup-message");
         dateFormat = config.getString("backup-date-format");
+        backupEmpty = config.getBoolean("backup-empty-server");
+        message = config.getString("backup-message");
         customMessage = config.getString("custom-backup-message");
         customMessageEnd = config.getString("custom-backup-message-end");
         disableZipping = config.getBoolean("disable-zipping");
@@ -168,6 +181,7 @@ public class SimpleBackup extends JavaPlugin {
         if (broadcast) {
             getServer().broadcastMessage(ChatColor.BLUE + message + " " + customMessageEnd);
         }
+        loginListener.notifyBackupCreated();
     }
 
     private Iterable<World> worldsForBackup() {

@@ -16,6 +16,9 @@
 # The backup file name. See Java's SimpleDateFormat for formatting help.
 # backup-date-format: yyyy-MM-dd-HH-mm-ss
 # #
+# Should a backup be created if no one was online since the last backup?
+# backup-empty-server: false
+# #
 # If zipping is disabled, the world files will be copied to a folder.
 # If zipping is enabled, the world files will be compressed in a zip file.
 # disable-zipping: false
@@ -59,6 +62,7 @@ backup-worlds:
 backup-folders:
 backup-file: backups/
 backup-date-format: yyyy-MM-dd-HH-mm-ss
+backup-empty-server: false
 disable-zipping: false
 delete-schedule:
     intervals:
