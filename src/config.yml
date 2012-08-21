@@ -59,7 +59,7 @@
 
 backup-interval-hours: 1.0
 backup-worlds:
-backup-folders: DEFAULT_VALUE
+backup-folders:
 backup-file: backups/
 backup-date-format: yyyy-MM-dd-HH-mm-ss
 backup-empty-server: false

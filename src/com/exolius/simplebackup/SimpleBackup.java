@@ -7,8 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
@@ -122,6 +121,27 @@ public class SimpleBackup extends JavaPlugin {
                 backupWorlds.add(world.getName());
             }
         }
+        Collection<File> folders = foldersForBackup();
+        Collection<World> worlds = worldsForBackup();
+        if (worlds.isEmpty()) {
+            getLogger().warning("Can't find any of the listed worlds " + backupWorlds);
+            if (folders.isEmpty()) {
+                throw new RuntimeException("Nothing to backup, no backups will be created");
+            } else {
+                getLogger().info("Only " + folders + " will be included in the backup");
+            }
+        } else {
+            if (worlds.size() < backupWorlds.size()) {
+                getLogger().warning("Not all listed worlds are recognized");
+            }
+            if (folders.size() < additionalFolders.size()) {
+                getLogger().warning("Not all listed folders are recognized");
+            }
+            getLogger().info("Worlds " + worlds + " scheduled for backup");
+            if (!folders.isEmpty()) {
+                getLogger().info("Folders " + folders + " scheduled for backup");
+            }
+        }
     }
 
     /*------------------------
@@ -151,12 +171,7 @@ public class SimpleBackup extends JavaPlugin {
             }
         }
         // additional folders, e.g. "plugins/"
-        for (String additionalFolder : additionalFolders) {
-            File f = new File(".", additionalFolder);
-            if (f.exists()) {
-                foldersToBackup.add(f);
-            }
-        }
+        foldersToBackup.addAll(foldersForBackup());
 
         // zip/copy world folders
         try {
@@ -184,7 +199,18 @@ public class SimpleBackup extends JavaPlugin {
         loginListener.notifyBackupCreated();
     }
 
-    private Iterable<World> worldsForBackup() {
+    private Collection<File> foldersForBackup() {
+        List<File> result = new ArrayList<File>();
+        for (String additionalFolder : additionalFolders) {
+            File f = new File(".", additionalFolder);
+            if (f.exists()) {
+                result.add(f);
+            }
+        }
+        return result;
+    }
+
+    private Collection<World> worldsForBackup() {
         List<World> worlds = new ArrayList<World>();
         for (World world : getServer().getWorlds()) {
             if (backupWorlds.contains(world.getName())) {
