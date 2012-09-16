@@ -57,15 +57,20 @@ public class ZipBackup extends BackupFileManager {
         } else {
             ZipEntry entry = new ZipEntry(root.relativize(source.toURI()).getPath());
             zip.putNextEntry(entry);
-            InputStream in = new FileInputStream(source);
+            InputStream in = null;
             try {
+                in = new FileInputStream(source);
                 byte[] buffer = new byte[4096];
                 int bytesRead;
                 while ((bytesRead = in.read(buffer)) > 0) {
                     zip.write(buffer, 0, bytesRead);
                 }
+            } catch (IOException e) {
+                logger.warning("Unable to backup file: " + source.getAbsolutePath() + "(" + e.getMessage() + ")");
             } finally {
-                in.close();
+                if (in != null) {
+                    in.close();
+                }
             }
         }
     }

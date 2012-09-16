@@ -17,7 +17,7 @@ public class CopyBackup extends BackupFileManager {
         File destination = new File(backupFolder, getFileName(date));
         for (File worldFolder : worldFolders) {
             logger.info("Backing up " + worldFolder);
-            FileUtils.copyFiles(worldFolder, new File(destination, worldFolder.getName()));
+            FileUtils.copyFiles(worldFolder, new File(destination, worldFolder.getName()), logger);
         }
         return date;
     }
