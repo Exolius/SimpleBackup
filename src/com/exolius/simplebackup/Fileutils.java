@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class FileUtils {
     /**
@@ -15,7 +16,7 @@ public class FileUtils {
      * @param dest -- A File object that represnts the destination for the copy.
      * @throws IOException if unable to copy.
      */
-    public static void copyFiles(File src, File dest) throws IOException {
+    public static void copyFiles(File src, File dest, Logger logger) throws IOException {
         //Check to ensure that the source is valid
         if (!src.exists()) {
             throw new IOException("copyFiles: Can not find source: " + src.getAbsolutePath()+".");
@@ -37,7 +38,7 @@ public class FileUtils {
             {
                 File dest1 = new File(dest, list[i]);
                 File src1 = new File(src, list[i]);
-                copyFiles(src1 , dest1);
+                copyFiles(src1 , dest1, logger);
             }
         } else {
             //This was not a directory, so lets just copy the file
@@ -54,11 +55,15 @@ public class FileUtils {
                     fout.write(buffer,0,bytesRead);
                 }
             } catch (IOException e) { //Error copying file...
-                IOException wrapper = new IOException("copyFiles: Unable to copy file: " +
-                        src.getAbsolutePath() + "to" + dest.getAbsolutePath()+".");
-                wrapper.initCause(e);
-                wrapper.setStackTrace(e.getStackTrace());
-                throw wrapper;
+                if (logger != null) {
+                    logger.warning("Unable to copy file: " + src.getAbsolutePath() + " to " + dest.getAbsolutePath()+". (" + e.getMessage() + ")");
+                } else {
+                    IOException wrapper = new IOException("copyFiles: Unable to copy file: " +
+                            src.getAbsolutePath() + " to " + dest.getAbsolutePath()+".");
+                    wrapper.initCause(e);
+                    wrapper.setStackTrace(e.getStackTrace());
+                    throw wrapper;
+                }
             } finally { //Ensure that the files are closed (if they were open).
                 if (fin != null) { fin.close(); }
                 if (fout != null) { fout.close(); }
