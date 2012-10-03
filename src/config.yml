@@ -56,6 +56,9 @@
 # The 'backup completed' message that is broadcast when backup ends
 # custom-backup-message-end: Backup completed
 # #
+# The time of day to make backups (makes sense with daily backups)
+# start-time: '03:00'
+# #
 
 backup-interval-hours: 1.0
 backup-worlds:

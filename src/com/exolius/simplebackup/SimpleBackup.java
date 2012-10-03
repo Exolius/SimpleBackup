@@ -7,12 +7,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
 public class SimpleBackup extends JavaPlugin {
     private double interval;
+    private Double startHour;
 
     private boolean broadcast = true;
     private boolean disableZipping = false;
@@ -54,22 +57,6 @@ public class SimpleBackup extends JavaPlugin {
             getServer().getPluginManager().registerEvents(loginListener, this);
         }
 
-        // Set the backup interval, 72000.0D is 1 hour, multiplying it by the value interval will change the backup cycle time
-        long ticks = (long) (72000 * this.interval);
-
-        // Add the repeating task, set it to repeat the specified time
-        this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
-            @Override
-            public void run() {
-                // When the task is run, start the map backup
-                if (backupEmpty || getServer().getOnlinePlayers().length > 0 || loginListener.someoneWasOnline()) {
-                    doBackup();
-                } else {
-                    getLogger().info("Skipping backup (no one was online)");
-                }
-            }
-        }, ticks, ticks);
-
         //Plugin commands
         getCommand("sbackup").setExecutor(new Commands(this));
 
@@ -78,8 +65,28 @@ public class SimpleBackup extends JavaPlugin {
             getLogger().info("Developed by Exolius");
         }
 
+        // Set the backup interval, 72000.0D is 1 hour, multiplying it by the value interval will change the backup cycle time
+        long ticks = (long) (72000 * this.interval);
+
+        if (ticks > 0) {
+            long delay = this.startHour != null ? syncStart(this.startHour) : ticks;
+            // Add the repeating task, set it to repeat the specified time
+            this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+                @Override
+                public void run() {
+                    // When the task is run, start the map backup
+                    if (backupEmpty || getServer().getOnlinePlayers().length > 0 || loginListener.someoneWasOnline()) {
+                        doBackup();
+                    } else {
+                        getLogger().info("Skipping backup (no one was online)");
+                    }
+                }
+            }, delay, ticks);
+            getLogger().info("Backup scheduled starting in " + delay / 72000. + " hours, repeat interval: " + this.interval + " hours");
+        }
+
         // After enabling, print to console to say if it was successful
-        getLogger().info("Enabled. Backup interval: " + this.interval + " hours");
+        getLogger().info("Enabled.");
     }
 
     /*---------------------------------------------------------
@@ -102,6 +109,7 @@ public class SimpleBackup extends JavaPlugin {
         customMessageEnd = config.getString("custom-backup-message-end");
         disableZipping = config.getBoolean("disable-zipping");
         selfPromotion = config.getBoolean("self-promotion");
+        String startTime = config.getString("start-time");
         List<String> intervalsStr = config.getStringList("delete-schedule.intervals");
         List<String> frequenciesStr = config.getStringList("delete-schedule.interval-frequencies");
 
@@ -140,6 +148,14 @@ public class SimpleBackup extends JavaPlugin {
             getLogger().info("Worlds " + worlds + " scheduled for backup");
             if (!folders.isEmpty()) {
                 getLogger().info("Folders " + folders + " scheduled for backup");
+            }
+        }
+        if (startTime != null) {
+            try {
+                Date parsedTime = new SimpleDateFormat("HH:mm").parse(startTime);
+                startHour = hoursOf(parsedTime);
+            } catch (ParseException ignored) {
+                getLogger().warning("Can't parse time " + startTime);
             }
         }
     }
@@ -218,6 +234,21 @@ public class SimpleBackup extends JavaPlugin {
             }
         }
         return worlds;
+    }
+
+    private double hoursOf(Date parsedTime) {
+        return parsedTime.getHours() + parsedTime.getMinutes() / 60. + parsedTime.getSeconds() / 3600.;
+    }
+
+    private long syncStart(double startHour) {
+        double now = hoursOf(new Date());
+        double diff = now - startHour;
+        if (diff < 0) {
+            diff += 24;
+        }
+        double intervalPart = diff - Math.floor(diff / interval) * interval;
+        double remaining = interval - intervalPart;
+        return (long) (remaining * 72000);
     }
 
 }
