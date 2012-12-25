@@ -123,32 +123,17 @@ public class SimpleBackup extends JavaPlugin {
             backupFileManager = new ZipBackup(backupFile, dateFormat, getLogger());
         }
         this.deleteSchedule = new DeleteSchedule(intervalsStr, frequenciesStr, backupFileManager, getLogger());
-        if (backupWorlds.isEmpty()) {
-            // If "backupWorlds" is empty then fill it with the worlds
-            for (World world : getServer().getWorlds()) {
-                backupWorlds.add(world.getName());
-            }
-        }
         Collection<File> folders = foldersForBackup();
         Collection<World> worlds = worldsForBackup();
-        if (worlds.isEmpty()) {
-            getLogger().warning("Can't find any of the listed worlds " + backupWorlds);
-            if (folders.isEmpty()) {
-                throw new RuntimeException("Nothing to backup, no backups will be created");
-            } else {
-                getLogger().info("Only " + folders + " will be included in the backup");
-            }
-        } else {
-            if (worlds.size() < backupWorlds.size()) {
-                getLogger().warning("Not all listed worlds are recognized");
-            }
-            if (folders.size() < additionalFolders.size()) {
-                getLogger().warning("Not all listed folders are recognized");
-            }
-            getLogger().info("Worlds " + worlds + " scheduled for backup");
-            if (!folders.isEmpty()) {
-                getLogger().info("Folders " + folders + " scheduled for backup");
-            }
+        if (worlds.size() < backupWorlds.size()) {
+            getLogger().warning("Not all listed worlds are recognized");
+        }
+        if (folders.size() < additionalFolders.size()) {
+            getLogger().warning("Not all listed folders are recognized");
+        }
+        getLogger().info("Worlds " + worlds + " scheduled for backup");
+        if (!folders.isEmpty()) {
+            getLogger().info("Folders " + folders + " scheduled for backup");
         }
         if (startTime != null) {
             try {
@@ -229,7 +214,7 @@ public class SimpleBackup extends JavaPlugin {
     private Collection<World> worldsForBackup() {
         List<World> worlds = new ArrayList<World>();
         for (World world : getServer().getWorlds()) {
-            if (backupWorlds.contains(world.getName())) {
+            if (backupWorlds.isEmpty() || backupWorlds.contains(world.getName())) {
                 worlds.add(world);
             }
         }
