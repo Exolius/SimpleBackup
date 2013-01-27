@@ -17,7 +17,7 @@ public class Commands implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("sbackup")) {
-            if (sender.isOp()) {
+            if (sender.isOp() || sender.hasPermission("simplebackup.use")) {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
