@@ -8,6 +8,7 @@
     <resources>
       <resource>
         <directory>src</directory>
+	<filtering>true</filtering>
         <excludes>
           <exclude>**/*.java</exclude>
         </excludes>
