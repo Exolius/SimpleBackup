@@ -6,3 +6,8 @@ commands:
    sbackup:
       description: Run map backup
       usage: /sbackup
+
+permissions:
+   simplebackup.use:
+      description: Run map backup
+      default: op

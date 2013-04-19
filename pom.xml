@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.exolius.simplebackup</groupId>
   <artifactId>SimpleBackup</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.5</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>

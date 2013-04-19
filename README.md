@@ -1,4 +1,4 @@
-*CURRENT BUILD: Bukkit #02377*
+*CURRENT BUILD: Bukkit 1.5.1
 ================================
 
 Since simple save is no longer available, I was looking for a nice simple way to back up my server maps with minimal configuration. Just set the folder and the interval, and your away. Most of the plugins I found had too many features for such a simple task (in my own opinion) so I decided to create this little plugin.
@@ -21,7 +21,7 @@ Also provide your SimpleBackup **config file** when stating you have a problem, 
 
 You can donate to SimpleBackup if you love the plugin to bits and want to show me some support by clicking the donate button in the top right of the [Bukkit Dev](http://dev.bukkit.org/server-mods/simplebackup) page. 
 
-Don't want to or can't donate?, then just leave a comment showing me support instead, or even better, click this adfly link:[http:adf.ly/395231/simplebackup](http:adf.ly/395231/simplebackup)
+Don't want to or can't donate?, then just leave a comment showing me support instead.
 
 
 Thanks for any support you give me, and enjoy simple backup!

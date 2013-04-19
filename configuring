@@ -56,6 +56,7 @@
 # The 'backup completed' message that is broadcast when backup ends
 # custom-backup-message-end: Backup completed
 # #
+#The plugin now has a permissions node as well, it defaults to OP's but you can grant other users access with 'simplebackup.use'
 
 backup-interval-hours: 1.0
 backup-worlds:

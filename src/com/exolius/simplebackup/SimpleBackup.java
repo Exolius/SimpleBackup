@@ -122,18 +122,19 @@ public class SimpleBackup extends JavaPlugin {
         } else {
             backupFileManager = new ZipBackup(backupFile, dateFormat, getLogger());
         }
+
         this.deleteSchedule = new DeleteSchedule(intervalsStr, frequenciesStr, backupFileManager, getLogger());
         Collection<File> folders = foldersForBackup();
         Collection<World> worlds = worldsForBackup();
         if (worlds.size() < backupWorlds.size()) {
-            getLogger().warning("Not all listed worlds are recognized");
+            getLogger().warning("Not all listed worlds are recognized.");
         }
         if (folders.size() < additionalFolders.size()) {
-            getLogger().warning("Not all listed folders are recognized");
+            getLogger().warning("Not all listed folders are recognized.");
         }
-        getLogger().info("Worlds " + worlds + " scheduled for backup");
+        getLogger().info("Worlds " + worlds + " scheduled for backup.");
         if (!folders.isEmpty()) {
-            getLogger().info("Folders " + folders + " scheduled for backup");
+            getLogger().info("Folders " + folders + " scheduled for backup.");
         }
         if (startTime != null) {
             try {
