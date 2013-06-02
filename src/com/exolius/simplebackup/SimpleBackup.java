@@ -27,6 +27,7 @@ public class SimpleBackup extends JavaPlugin {
     private String backupFile = "backups/";
     private String customMessage = "Backup starting";
     private String customMessageEnd = "Backup completed";
+    private String backupCommand = "";
 
     private List<String> backupWorlds;
     private List<String> additionalFolders;
@@ -35,6 +36,7 @@ public class SimpleBackup extends JavaPlugin {
 
     protected FileConfiguration config;
     private final LoginListener loginListener = new LoginListener();
+    private final BackupHooks backupHooks= new BackupHooks();
 
     /*----------------------------------------
      This is ran when the plugin is disabled
@@ -107,6 +109,7 @@ public class SimpleBackup extends JavaPlugin {
         message = config.getString("backup-message");
         customMessage = config.getString("custom-backup-message");
         customMessageEnd = config.getString("custom-backup-message-end");
+	backupCommand = config.getString("backup-completed-hook");
         disableZipping = config.getBoolean("disable-zipping");
         selfPromotion = config.getBoolean("self-promotion");
         String startTime = config.getString("start-time");
@@ -176,8 +179,9 @@ public class SimpleBackup extends JavaPlugin {
         foldersToBackup.addAll(foldersForBackup());
 
         // zip/copy world folders
+	String backupFile = null;
         try {
-            backupFileManager.createBackup(foldersToBackup);
+            backupFile = backupFileManager.createBackup(foldersToBackup);
         } catch (IOException e) {
             getLogger().log(Level.WARNING, e.getMessage(), e);
         }
@@ -198,7 +202,10 @@ public class SimpleBackup extends JavaPlugin {
         if (broadcast) {
             getServer().broadcastMessage(ChatColor.BLUE + message + " " + customMessageEnd);
         }
-        loginListener.notifyBackupCreated();
+	if(backupFile != null) {
+	   loginListener.notifyBackupCreated();
+	   backupHooks.notifyBackupCreated(backupCommand, backupFile);
+	}
     }
 
     private Collection<File> foldersForBackup() {

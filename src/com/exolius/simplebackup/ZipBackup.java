@@ -15,7 +15,7 @@ public class ZipBackup extends BackupFileManager {
     }
 
     @Override
-    public Date createBackup(Iterable<File> worldFolders) throws IOException {
+    public String createBackup(Iterable<File> worldFolders) throws IOException {
         if (!backupFolder.exists()) {
             backupFolder.mkdirs();
         }
@@ -34,7 +34,7 @@ public class ZipBackup extends BackupFileManager {
                 logger.log(Level.FINE, e.getMessage(), e);
             }
         }
-        return date;
+        return backupFile.getAbsolutePath();
     }
 
     @Override

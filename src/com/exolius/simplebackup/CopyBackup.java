@@ -12,14 +12,14 @@ public class CopyBackup extends BackupFileManager {
     }
 
     @Override
-    public Date createBackup(Iterable<File> worldFolders) throws IOException {
+    public String createBackup(Iterable<File> worldFolders) throws IOException {
         Date date = new Date();
         File destination = new File(backupFolder, getFileName(date));
         for (File worldFolder : worldFolders) {
             logger.info("Backing up " + worldFolder);
             FileUtils.copyFiles(worldFolder, new File(destination, worldFolder.getName()), logger);
         }
-        return date;
+        return destination.getAbsolutePath();
     }
 
     @Override
