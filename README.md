@@ -21,7 +21,7 @@ Also provide your SimpleBackup **config file** when stating you have a problem, 
 
 You can donate to SimpleBackup if you love the plugin to bits and want to show me some support by clicking the donate button in the top right of the [Bukkit Dev](http://dev.bukkit.org/server-mods/simplebackup) page. 
 
-Don't want to or can't donate?, then just leave a comment showing me support instead.
+Don't want to or can't donate?, then just leave a comment showing me support instead!
 
 
 Thanks for any support you give me, and enjoy simple backup!
