@@ -1,5 +1,6 @@
 package com.exolius.simplebackup;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -75,7 +76,7 @@ public class SimpleBackup extends JavaPlugin {
                 @Override
                 public void run() {
                     // When the task is run, start the map backup
-                    if (backupEmpty || getServer().getOnlinePlayers().length > 0 || loginListener.someoneWasOnline()) {
+                    if (backupEmpty || Bukkit.getServer().getOnlinePlayers().size() > 0 || loginListener.someoneWasOnline()) {
                         doBackup();
                     } else {
                         getLogger().info("Skipping backup (no one was online)");

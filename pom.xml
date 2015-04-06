@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.exolius.simplebackup</groupId>
   <artifactId>SimpleBackup</artifactId>
-  <version>1.5</version>
+  <version>1.6</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -35,7 +35,7 @@
   	<dependency>
   		<groupId>org.bukkit</groupId>
   		<artifactId>bukkit</artifactId>
-  		<version>1.5-R0.1-SNAPSHOT</version>
+  		<version>1.8.3-R0.1-SNAPSHOT</version>
   	</dependency>
   </dependencies>
 </project>
