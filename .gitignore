@@ -24,6 +24,8 @@
 *.iml
 /.idea
 /out
+/target
+/lib
 
 # Logs and databases #
 ######################
