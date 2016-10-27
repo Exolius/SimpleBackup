@@ -72,7 +72,7 @@ public class SimpleBackup extends JavaPlugin {
         if (ticks > 0) {
             long delay = this.startHour != null ? syncStart(this.startHour) : ticks;
             // Add the repeating task, set it to repeat the specified time
-            this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+            this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
                 @Override
                 public void run() {
                     // When the task is run, start the map backup
@@ -154,7 +154,11 @@ public class SimpleBackup extends JavaPlugin {
         // Begin backup of worlds
         // Broadcast the backup initialization if enabled
         if (broadcast) {
-            getServer().broadcastMessage(ChatColor.BLUE + message + " " + customMessage);
+        	getServer().getScheduler().runTask(this, new Runnable(){
+				@Override
+				public void run() {
+		            getServer().broadcastMessage(ChatColor.BLUE + message + " " + customMessage);
+				}});
         }
         // Loop through all the specified worlds and save them
         List<File> foldersToBackup = new ArrayList<File>();
@@ -197,7 +201,11 @@ public class SimpleBackup extends JavaPlugin {
 
         // Broadcast the backup completion if enabled
         if (broadcast) {
-            getServer().broadcastMessage(ChatColor.BLUE + message + " " + customMessageEnd);
+        	getServer().getScheduler().runTask(this, new Runnable(){
+				@Override
+				public void run() {
+					getServer().broadcastMessage(ChatColor.BLUE + message + " " + customMessageEnd);
+				}});
         }
         loginListener.notifyBackupCreated();
     }
