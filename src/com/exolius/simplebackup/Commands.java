@@ -25,7 +25,7 @@ public class Commands implements CommandExecutor {
                 }
             }).start();
         } else {
-        	sender.sendMessage(ChatColor.RED + "You don't have permission to execute this command.");
+        	return false;
         }
         
         return true;
