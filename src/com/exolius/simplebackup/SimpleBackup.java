@@ -239,7 +239,13 @@ public class SimpleBackup extends JavaPlugin {
     }
 
     private double hoursOf(Date parsedTime) {
-        return parsedTime.getHours() + parsedTime.getMinutes() / 60. + parsedTime.getSeconds() / 3600.;
+        Calendar calendar = GregorianCalendar.getInstance();
+        calendar.setTime(parsedTime);
+        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+        int minutes = calendar.get(Calendar.MINUTE);
+        int seconds = calendar.get(Calendar.SECOND);
+
+        return hours + minutes / 60. + seconds / 3600.;
     }
 
     private long syncStart(double startHour) {
