@@ -23,10 +23,9 @@ public class Commands implements CommandExecutor {
                     plugin.doBackup();
                 }
             }).start();
+            return true;
         } else {
         	return false;
         }
-        
-        return true;
     }
 }
