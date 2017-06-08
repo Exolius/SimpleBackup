@@ -1,5 +1,6 @@
 package com.exolius.simplebackup;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,7 +24,10 @@ public class Commands implements CommandExecutor {
                     plugin.doBackup();
                 }
             }).start();
+        } else {
+        	sender.sendMessage(ChatColor.RED + "You don't have permission to execute this command.");
         }
+        
         return true;
     }
 }
