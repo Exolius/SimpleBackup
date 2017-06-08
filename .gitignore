@@ -39,3 +39,9 @@
 ehthumbs.db
 Icon?
 Thumbs.db
+/bin/
+
+.classpath
+*.project
+.settings/org.eclipse.jdt.core.prefs
+*.prefs
