@@ -14,7 +14,7 @@ Plus more features as development goes on, but not too many because this is a si
 
 **Providing error reports:**
 
-When pasting large ammounts of text please use [pastebin.com](http://pastebin.com). Its completely free and makes it easier for me to read any error messages you provide. You can even set it as a private paste so only people with the link can view it.
+When pasting large amounts of text please use [pastebin.com](http://pastebin.com). Its completely free and makes it easier for me to read any error messages you provide. You can even set it as a private paste so only people with the link can view it.
 
 Also provide your SimpleBackup **config file** when stating you have a problem, so I can see if that's the problem instead.
 
