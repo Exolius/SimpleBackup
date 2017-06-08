@@ -16,17 +16,14 @@ public class Commands implements CommandExecutor {
     --------------------------------------------------------*/
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("sbackup")) {
-            if (sender.hasPermission("simplebackup.use")) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        plugin.doBackup();
-                    }
-                }).start();
-            }
-            return true;
+        if (sender.hasPermission("simplebackup.use")) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    plugin.doBackup();
+                }
+            }).start();
         }
-        return false;
+        return true;
     }
 }
