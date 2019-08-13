@@ -10,8 +10,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -83,17 +83,14 @@ public class SimpleBackup extends JavaPlugin {
         if (ticks > 0) {
             final long delay = this.startHour != null ? this.syncStart(this.startHour) : ticks;
             // Add the repeating task, set it to repeat the specified time
-            this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable() {
-                @Override
-                public void run() {
-                    // When the task is run, start the map backup
-                    if (SimpleBackup.this.backupEmpty || Bukkit.getServer().getOnlinePlayers().size() > 0 || SimpleBackup.this.loginListener.someoneWasOnline()) {
-                        SimpleBackup.this.doBackup();
-                    } else {
-                        SimpleBackup.this.getLogger().info("Skipping backup (no one was online)");
-                    }
-                }
-            }, delay, ticks);
+            this.getServer().getScheduler().runTaskTimerAsynchronously(this, () -> {
+			    // When the task is run, start the map backup
+			    if (SimpleBackup.this.backupEmpty || Bukkit.getServer().getOnlinePlayers().size() > 0 || SimpleBackup.this.loginListener.someoneWasOnline()) {
+			        SimpleBackup.this.doBackup();
+			    } else {
+			        SimpleBackup.this.getLogger().info("Skipping backup (no one was online)");
+			    }
+			}, delay, ticks);
             this.getLogger().info("Backup scheduled starting in " + delay / 72000. + " hours, repeat interval: " + this.interval + " hours");
         }
 
@@ -146,7 +143,7 @@ public class SimpleBackup extends JavaPlugin {
         if (folders.size() < this.additionalFolders.size()) {
             this.getLogger().warning("Not all listed folders are recognized.");
         }
-        this.getLogger().info("Worlds " + worlds + " scheduled for backup.");
+        this.getLogger().info("Worlds " + worlds.stream().map(World::getName).collect(Collectors.toList()) + " scheduled for backup.");
         if (!folders.isEmpty()) {
             this.getLogger().info("Folders " + folders + " scheduled for backup.");
         }
@@ -167,24 +164,17 @@ public class SimpleBackup extends JavaPlugin {
         // Begin backup of worlds
         // Broadcast the backup initialization if enabled
         if (this.broadcast) {
-        	this.getServer().getScheduler().runTask(this, new Runnable(){
-				@Override
-				public void run() {
-		            SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE + SimpleBackup.this.message + " " + SimpleBackup.this.customMessage);
-				}});
+        	this.getServer().getScheduler().runTask(this, () -> SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE + SimpleBackup.this.message + " " + SimpleBackup.this.customMessage));
         }
         // Loop through all the specified worlds and save them
         final List<File> foldersToBackup = new ArrayList<>();
         for (final World world : this.worldsForBackup()) {
             world.setAutoSave(false);
             try {
-                this.getServer().getScheduler().callSyncMethod(this, new Callable<Object>() {
-                    @Override
-                    public Object call() throws Exception {
-                        world.save();
-                        return null;
-                    }
-                }).get();
+                this.getServer().getScheduler().callSyncMethod(this, () -> {
+				    world.save();
+				    return null;
+				}).get();
                 foldersToBackup.add(world.getWorldFolder());
             } catch (final Exception e) {
                 this.getLogger().log(Level.WARNING, e.getMessage(), e);
@@ -215,11 +205,7 @@ public class SimpleBackup extends JavaPlugin {
 
         // Broadcast the backup completion if enabled
         if (this.broadcast) {
-        	this.getServer().getScheduler().runTask(this, new Runnable(){
-				@Override
-				public void run() {
-					SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE + SimpleBackup.this.message + " " + SimpleBackup.this.customMessageEnd);
-				}});
+        	this.getServer().getScheduler().runTask(this, () -> SimpleBackup.this.getServer().broadcastMessage(ChatColor.BLUE + SimpleBackup.this.message + " " + SimpleBackup.this.customMessageEnd));
         }
 	if(backupFile != null) {
 	   this.loginListener.notifyBackupCreated();
