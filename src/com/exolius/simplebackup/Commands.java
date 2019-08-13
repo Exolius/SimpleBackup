@@ -1,5 +1,6 @@
 package com.exolius.simplebackup;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,12 +16,7 @@ public class Commands implements CommandExecutor {
     @Override
     public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args) {
         if (sender.hasPermission("simplebackup.use")) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Commands.this.plugin.doBackup();
-                }
-            }).start();
+        	Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> Commands.this.plugin.doBackup());
             return true;
         } else {
         	return false;
