@@ -21,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.exolius.simplebackup.manager.CopyBackup;
 import com.exolius.simplebackup.manager.ZipBackup;
+import com.exolius.simplebackup.util.DeleteSchedule;
 
 public class SimpleBackup extends JavaPlugin {
     private double interval;

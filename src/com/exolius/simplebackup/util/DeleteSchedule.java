@@ -1,4 +1,4 @@
-package com.exolius.simplebackup;
+package com.exolius.simplebackup.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +11,8 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.exolius.simplebackup.IBackupFileManager;
 
 public class DeleteSchedule {
 
