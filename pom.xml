@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exolius.simplebackup</groupId>
     <artifactId>SimpleBackup</artifactId>
-    <version>1.8</version>
+    <version>1.9</version>
     <build>
         <sourceDirectory>src</sourceDirectory>
 
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.12-R0.1-SNAPSHOT</version>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
