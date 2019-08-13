@@ -1,6 +1,9 @@
-name: SimpleBackup
+name: SimpleBackupReloaded
 main: com.exolius.simplebackup.SimpleBackup
 version: ${project.version}
+description: Updated version of the original SimpleBackup plugin by Exolius
+author: Derkades
+authors: [Exolius]
 
 commands:
    sbackup:
