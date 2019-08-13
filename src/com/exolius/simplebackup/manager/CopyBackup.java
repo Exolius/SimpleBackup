@@ -1,9 +1,11 @@
-package com.exolius.simplebackup;
+package com.exolius.simplebackup.manager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.logging.Logger;
+
+import com.exolius.simplebackup.util.FileUtils;
 
 public class CopyBackup extends BackupFileManager {
 

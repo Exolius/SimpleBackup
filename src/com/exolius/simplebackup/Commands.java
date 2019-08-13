@@ -5,22 +5,20 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 public class Commands implements CommandExecutor {
-    private SimpleBackup plugin;
 
-    public Commands(SimpleBackup plugin) {
+    private final SimpleBackup plugin;
+
+    public Commands(final SimpleBackup plugin) {
         this.plugin = plugin;
     }
 
-    /*-------------------------------------------------------
-    This is ran when the plugin command is sent by a player
-    --------------------------------------------------------*/
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args) {
         if (sender.hasPermission("simplebackup.use")) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    plugin.doBackup();
+                    Commands.this.plugin.doBackup();
                 }
             }).start();
             return true;

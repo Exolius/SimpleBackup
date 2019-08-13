@@ -19,6 +19,9 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.exolius.simplebackup.manager.CopyBackup;
+import com.exolius.simplebackup.manager.ZipBackup;
+
 public class SimpleBackup extends JavaPlugin {
     private double interval;
     private Double startHour;

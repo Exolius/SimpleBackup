@@ -1,4 +1,4 @@
-package com.exolius.simplebackup;
+package com.exolius.simplebackup.manager;
 
 import java.io.File;
 import java.text.ParsePosition;
@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Logger;
+
+import com.exolius.simplebackup.IBackupFileManager;
 
 public abstract class BackupFileManager implements IBackupFileManager {
 
