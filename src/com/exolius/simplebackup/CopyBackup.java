@@ -7,37 +7,37 @@ import java.util.logging.Logger;
 
 public class CopyBackup extends BackupFileManager {
 
-    public CopyBackup(String backupFolder, String fileNameDateFormat, Logger logger) {
-        super(backupFolder, fileNameDateFormat, logger);
+    public CopyBackup(final String backupFolder, final String backupPrefix, final String fileNameDateFormat, final Logger logger) {
+        super(backupFolder, backupPrefix, fileNameDateFormat, logger);
     }
 
     @Override
-    public String createBackup(Iterable<File> worldFolders) throws IOException {
-        Date date = new Date();
-        File destination = new File(backupFolder, getFileName(date));
-        for (File worldFolder : worldFolders) {
-            logger.info("Backing up " + worldFolder);
-            FileUtils.copyFiles(worldFolder, new File(destination, worldFolder.getName()), logger);
+    public String createBackup(final Iterable<File> worldFolders) throws IOException {
+        final Date date = new Date();
+        final File destination = new File(this.backupFolder, this.getFileName(date));
+        for (final File worldFolder : worldFolders) {
+            this.logger.info("Backing up " + worldFolder);
+            FileUtils.copyFiles(worldFolder, new File(destination, worldFolder.getName()), this.logger);
         }
         return destination.getAbsolutePath();
     }
 
     @Override
-    public void deleteBackup(Date date) throws IOException {
-        File backupFile = new File(backupFolder, getFileName(date));
-        logger.info("Deleting backup " + backupFile.getPath());
-        deleteFile(backupFile);
+    public void deleteBackup(final Date date) throws IOException {
+        final File backupFile = new File(this.backupFolder, this.getFileName(date));
+        this.logger.info("Deleting backup " + backupFile.getPath());
+        this.deleteFile(backupFile);
     }
 
     @Override
-    protected String getFileName(Date date) {
-        return formatDate(date);
+    protected String getFileName(final Date date) {
+        return this.formatDate(date);
     }
 
-    void deleteFile(File f) throws IOException {
+    void deleteFile(final File f) throws IOException {
         if (f.isDirectory()) {
-            for (File c : f.listFiles()) {
-                deleteFile(c);
+            for (final File c : f.listFiles()) {
+                this.deleteFile(c);
             }
         }
         f.delete();
