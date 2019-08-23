@@ -44,7 +44,6 @@ public class SimpleBackup extends JavaPlugin {
     private IBackupFileManager backupFileManager;
     private DeleteSchedule deleteSchedule;
 
-    protected FileConfiguration config;
     private final LoginListener loginListener = new LoginListener();
     private final BackupHooks backupHooks= new BackupHooks();
 
@@ -62,7 +61,7 @@ public class SimpleBackup extends JavaPlugin {
      -----------------------------------------*/
     @Override
     public void onEnable() {
-        // When plugin is enabled, load the "config.yml"
+        this.saveDefaultConfig();
         this.loadConfiguration();
 
         if (!this.backupEmpty) {
@@ -103,30 +102,26 @@ public class SimpleBackup extends JavaPlugin {
      ---------------------------------------------------------*/
     public void loadConfiguration() {
         // Set the config object
-        this.config = this.getConfig();
+        final FileConfiguration config = this.getConfig();
 
         // Set default values for variables
-        this.interval = this.config.getDouble("backup-interval-hours");
-        this.broadcast = this.config.getBoolean("broadcast-message");
-        this.backupFile = this.config.getString("backup-file");
-        this.backupWorlds = this.config.getStringList("backup-worlds");
-        this.additionalFolders = this.config.getStringList("backup-folders");
-        this.dateFormat = this.config.getString("backup-date-format");
-        this.backupEmpty = this.config.getBoolean("backup-empty-server");
-        this.message = this.config.getString("backup-message");
-        this.customMessage = this.config.getString("custom-backup-message");
-        this.customMessageEnd = this.config.getString("custom-backup-message-end");
-	this.backupCommand = this.config.getString("backup-completed-hook");
-        this.disableZipping = this.config.getBoolean("disable-zipping");
-        this.selfPromotion = this.config.getBoolean("self-promotion");
-        final String startTime = this.config.getString("start-time");
-        final List<String> intervalsStr = this.config.getStringList("delete-schedule.intervals");
-        final List<String> frequenciesStr = this.config.getStringList("delete-schedule.interval-frequencies");
-        final String backupPrefix = this.config.getString("backup-prefix", "");
-
-        //Save the configuration file
-        this.config.options().copyDefaults(true);
-        this.saveConfig();
+        this.interval = config.getDouble("backup-interval-hours");
+        this.broadcast = config.getBoolean("broadcast-message");
+        this.backupFile = config.getString("backup-file");
+        this.backupWorlds = config.getStringList("backup-worlds");
+        this.additionalFolders = config.getStringList("backup-folders");
+        this.dateFormat = config.getString("backup-date-format");
+        this.backupEmpty = config.getBoolean("backup-empty-server");
+        this.message = config.getString("backup-message");
+        this.customMessage = config.getString("custom-backup-message");
+        this.customMessageEnd = config.getString("custom-backup-message-end");
+        this.backupCommand = config.getString("backup-completed-hook");
+        this.disableZipping = config.getBoolean("disable-zipping");
+        this.selfPromotion = config.getBoolean("self-promotion");
+        final String startTime = config.getString("start-time");
+        final List<String> intervalsStr = config.getStringList("delete-schedule.intervals");
+        final List<String> frequenciesStr = config.getStringList("delete-schedule.interval-frequencies");
+        final String backupPrefix = config.getString("backup-prefix", "");
 
         if (this.disableZipping) {
             this.backupFileManager = new CopyBackup(this.backupFile, backupPrefix, this.dateFormat, this.getLogger());
