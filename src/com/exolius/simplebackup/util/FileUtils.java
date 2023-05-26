@@ -1,4 +1,4 @@
-package com.exolius.simplebackup;
+package com.exolius.simplebackup.util;
 
 import java.io.File;
 import java.io.FileInputStream;
